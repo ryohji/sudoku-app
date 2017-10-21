@@ -7,13 +7,14 @@ const rootVm = new Vue({
     computed: {
         rows: function() {
             const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
+            const reduceConcat = a => [a[0]].concat(a[1].length ? reduceConcat(a[1]) : []);
             const rows = splitAt(Array.from(this.board).map(Number), 9);
             var p = rows;
             while (p[1].length !== 0) {
                 p[1] = splitAt(p[1], 9);
                 p = p[1];
             }
-            return rows;
+            return reduceConcat(rows);
         },
     },
     data: () => new Object({
