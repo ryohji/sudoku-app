@@ -1,0 +1,26 @@
+{
+  "name": "sudoku-app",
+  "version": "1.0.0",
+  "description": "HTML based sudoku application.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryohji/sudoku-app.git"
+  },
+  "keywords": [
+    "sudoku",
+    "vuejs"
+  ],
+  "author": "Ikebe, Ryohji",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ryohji/sudoku-app/issues"
+  },
+  "homepage": "https://github.com/ryohji/sudoku-app#readme",
+  "dependencies": {
+    "vue": "^2.5.2"
+  }
+}
