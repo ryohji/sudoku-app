@@ -2,8 +2,14 @@ const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div>
-    <span v-for="row in rows">{{ row }}<br /></span>
+    <span v-for="row in rows"><number-box v-for="n in row" :number="n" :key="n" /><br /></span>
     </div>`,
+    components: {
+        'number-box': {
+            props: { number: Number, },
+            template: '<span>{{ number }}</span>',
+        },
+    },
     computed: {
         rows: function() {
             const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
