@@ -11,15 +11,7 @@
 }
 
 .number-box.fixed {
-    display: inline-block;
-    text-align: center;
-    line-height: 2em;
-    vertical-align: middle;
-    width: 2em;
-    height: 2em;
     border-color: transparent;
-    border-width: 1px;
-    border-style: solid;
     color: white;
-    background-color: darkblue;
+    background-color: black;
 }
