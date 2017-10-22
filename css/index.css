@@ -1,0 +1,17 @@
+.number-box {
+    display: inline-block;
+    text-align: center;
+    line-height: 2em;
+    vertical-align: middle;
+    width: 2em;
+    height: 2em;
+    border-color: black;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.number-box.fixed {
+    border-color: transparent;
+    color: white;
+    background-color: black;
+}
