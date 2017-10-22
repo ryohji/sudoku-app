@@ -3,11 +3,35 @@ const rootVm = new Vue({
     template: `
     <div>
     <span v-for="row in rows"><number-box v-for="n in row" :number="n" :key="n" /><br /></span>
+    <numbers-box v-for="(box, index) in boxes" :numbers="box" :key="box.join()">{{ index }}</numbers-box>
     </div>`,
     components: {
         'number-box': {
             props: { number: Number, },
             template: '<div v-if="number" class="number-box fixed">{{ number }}</div><div v-else class="number-box" />',
+        },
+        'numbers-box': {
+            props: { numbers: Array, },
+            template: `<div style="display: inline-block;"><box-row v-for="row in rows" :key="row.join()" :numbers="row"
+            ><slot></slot></box-row></div>`,
+            components: {
+                'box-row': {
+                    props: { numbers: Array, },
+                    template: `<span><box-cell v-for="n in numbers" :key="n" :number="n" class="number-box" /><br /></span>`,
+                    components: {
+                        'box-cell': {
+                            props: { number: Number, },
+                            template: '<span v-if="number" class="fixed">{{ number }}</span><span v-else />',
+                        },
+                    },
+                },
+            },
+            computed: {
+                rows: function() {
+                    const ns = this.numbers;
+                    return [ns.slice(0, 3), ns.slice(3, 6), ns.slice(6, 9),];
+                },
+            },
         },
     },
     computed: {
