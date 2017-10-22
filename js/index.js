@@ -7,7 +7,7 @@ const rootVm = new Vue({
     components: {
         'number-box': {
             props: { number: Number, },
-            template: '<span>{{ number }}</span>',
+            template: '<div class="number-box">{{ number }}</div>',
         },
     },
     computed: {
