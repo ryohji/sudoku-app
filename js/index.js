@@ -22,6 +22,22 @@ const rootVm = new Vue({
             const reduceConcat = a => a.length ? a.reduce((a, b) => [a].concat(reduceConcat(b))) : [];
             return reduceConcat(rows);
         },
+        boxes: function() {
+            const rows = this.rows;
+            return [
+                [].concat(rows[0].slice(0, 3), rows[1].slice(0, 3), rows[2].slice(0, 3)),
+                [].concat(rows[0].slice(3, 6), rows[1].slice(3, 6), rows[2].slice(3, 6)),
+                [].concat(rows[0].slice(6, 9), rows[1].slice(6, 9), rows[2].slice(6, 9)),
+
+                [].concat(rows[3].slice(0, 3), rows[4].slice(0, 3), rows[5].slice(0, 3)),
+                [].concat(rows[3].slice(3, 6), rows[4].slice(3, 6), rows[5].slice(3, 6)),
+                [].concat(rows[3].slice(6, 9), rows[4].slice(6, 9), rows[5].slice(6, 9)),
+
+                [].concat(rows[6].slice(0, 3), rows[7].slice(0, 3), rows[8].slice(0, 3)),
+                [].concat(rows[6].slice(3, 6), rows[7].slice(3, 6), rows[8].slice(3, 6)),
+                [].concat(rows[6].slice(6, 9), rows[7].slice(6, 9), rows[8].slice(6, 9)),
+            ];
+        },
     },
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040',
