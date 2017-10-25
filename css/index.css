@@ -1,4 +1,4 @@
-.number-box {
+.cell {
     display: inline-block;
     text-align: center;
     line-height: 2em;
@@ -10,7 +10,7 @@
     border-style: solid;
 }
 
-.number-box.fixed {
+.cell.fixed {
     border-color: transparent;
     color: white;
     background-color: black;

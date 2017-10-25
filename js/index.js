@@ -10,9 +10,9 @@ const rootVm = new Vue({
         'numbers-box': {
             props: { numbers: Array, },
             template: `<span style="display: inline-block;">
-            <span v-for="n in numbers.slice(0, 3)" :class="'number-box' + (n ? ' fixed' : '')">{{ n || '' }}</span><br />
-            <span v-for="n in numbers.slice(3, 6)" :class="'number-box' + (n ? ' fixed' : '')">{{ n || '' }}</span><br />
-            <span v-for="n in numbers.slice(6, 9)" :class="'number-box' + (n ? ' fixed' : '')">{{ n || '' }}</span><br />
+            <span v-for="n in numbers.slice(0, 3)" :class="{'cell': 1, fixed: n}">{{ n || '' }}</span><br />
+            <span v-for="n in numbers.slice(3, 6)" :class="{'cell': 1, fixed: n}">{{ n || '' }}</span><br />
+            <span v-for="n in numbers.slice(6, 9)" :class="{'cell': 1, fixed: n}">{{ n || '' }}</span><br />
             </span>`,
         },
     },
