@@ -1,3 +1,12 @@
+* {
+    font-family: 'Droid Sans', sans-serif;
+    font-family: 'Droid Serif', serif;
+}
+
+.box {
+    display: inline-block;
+}
+
 .cell {
     display: inline-block;
     text-align: center;
@@ -10,8 +19,6 @@
     border-style: solid;
 }
 
-.cell.fixed {
-    border-color: transparent;
-    color: white;
-    background-color: black;
+.cell.given {
+    font-family: 'Droid Sans', sans-serif;
 }
