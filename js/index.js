@@ -2,18 +2,18 @@ const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div>
-    <numbers-box :numbers="boxes[0]" /><numbers-box :numbers="boxes[1]" /><numbers-box :numbers="boxes[2]" /><br />
-    <numbers-box :numbers="boxes[3]" /><numbers-box :numbers="boxes[4]" /><numbers-box :numbers="boxes[5]" /><br />
-    <numbers-box :numbers="boxes[6]" /><numbers-box :numbers="boxes[7]" /><numbers-box :numbers="boxes[8]" /><br />
+    <numbers-box v-for="box in boxes.slice(0, 3)" :numbers="box" /><br />
+    <numbers-box v-for="box in boxes.slice(3, 6)" :numbers="box" /><br />
+    <numbers-box v-for="box in boxes.slice(6, 9)" :numbers="box" /><br />
     </div>`,
     components: {
         'numbers-box': {
             props: { numbers: Array, },
-            template: `<span style="display: inline-block;">
-            <span v-for="n in numbers.slice(0, 3)" :class="{'cell': 1, fixed: n}">{{ n || '' }}</span><br />
-            <span v-for="n in numbers.slice(3, 6)" :class="{'cell': 1, fixed: n}">{{ n || '' }}</span><br />
-            <span v-for="n in numbers.slice(6, 9)" :class="{'cell': 1, fixed: n}">{{ n || '' }}</span><br />
-            </span>`,
+            template: `<div class="box">
+            <span v-for="n in numbers.slice(0, 3)" :class="{'cell': 1, given: n}">{{ n || '' }}</span><br />
+            <span v-for="n in numbers.slice(3, 6)" :class="{'cell': 1, given: n}">{{ n || '' }}</span><br />
+            <span v-for="n in numbers.slice(6, 9)" :class="{'cell': 1, given: n}">{{ n || '' }}</span><br />
+            </div>`,
         },
     },
     computed: {
