@@ -2,20 +2,14 @@ const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div>
-    <numbers-box v-for="box in boxes.slice(0, 3)" :numbers="box" /><br />
-    <numbers-box v-for="box in boxes.slice(3, 6)" :numbers="box" /><br />
-    <numbers-box v-for="box in boxes.slice(6, 9)" :numbers="box" /><br />
+        <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
+            <div class="box" v-for="numbers in boxes.slice(span[0], span[1])">
+                <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
+                    <span v-for="n in numbers.slice(span[0], span[1])" :class="{'cell': 1, given: n}">{{ n || '' }}</span>
+                </div>
+            </div>
+        </div>
     </div>`,
-    components: {
-        'numbers-box': {
-            props: { numbers: Array, },
-            template: `<div class="box">
-            <span v-for="n in numbers.slice(0, 3)" :class="{'cell': 1, given: n}">{{ n || '' }}</span><br />
-            <span v-for="n in numbers.slice(3, 6)" :class="{'cell': 1, given: n}">{{ n || '' }}</span><br />
-            <span v-for="n in numbers.slice(6, 9)" :class="{'cell': 1, given: n}">{{ n || '' }}</span><br />
-            </div>`,
-        },
-    },
     computed: {
         rows: function() {
             const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
