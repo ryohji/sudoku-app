@@ -1,17 +1,40 @@
-.number-box {
+* {
+    font-family: 'Droid Sans', sans-serif;
+    font-family: 'Droid Serif', serif;
+}
+
+.boxes {
+    display: inline-block;
+    border: 0 solid black;
+    border-width: 0 1px 1px 0;
+}
+
+.box {
+    display: inline-block;
+    border: 0 solid black;
+    border-width: 1px 0 0 1px;
+}
+
+.row-in-box:first-child > .cell {
+    border-top-style: none;
+}
+
+.cell:first-child {
+    border-left-style: none;
+}
+
+.cell {
     display: inline-block;
     text-align: center;
     line-height: 2em;
     vertical-align: middle;
     width: 2em;
     height: 2em;
-    border-color: black;
-    border-width: 1px;
+    border-color: silver;
+    border-width: 1px 0 0 1px;
     border-style: solid;
 }
 
-.number-box.fixed {
-    border-color: transparent;
-    color: white;
-    background-color: black;
+.cell.given {
+    font-family: 'Droid Sans', sans-serif;
 }
