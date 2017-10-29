@@ -1,7 +1,7 @@
 const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
-    <div>
+    <div class="boxes">
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="numbers in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
