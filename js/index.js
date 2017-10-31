@@ -5,7 +5,11 @@ const rootVm = new Vue({
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="numbers in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
-                    <span v-for="n in numbers.slice(span[0], span[1])" :class="{'cell': 1, given: n}">{{ n || '' }}</span>
+                    <span v-for="n in numbers.slice(span[0], span[1])" :class="{'cell': 1, given: n}">{{
+                        n || ''
+                    }}<div v-if="!n" class="memo" v-for="memo in [[1,2,3],[4,5,6],[7,8,9]]">
+                    <span v-for="n in memo">{{ n }}</span>
+                    </div></span>
                 </div>
             </div>
         </div>
