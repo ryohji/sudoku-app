@@ -40,8 +40,6 @@ const rootVm = new Vue({
     created: function() {
         const makeCellObject = n => n ? { type: 'given', value: n, } : { type: 'free', value: [1,2,3,4,5,6,7,8,9,], };
         const rows = slice(Array.from(this.board).map(Number).map(makeCellObject), 9);
-        this.rows = rows;
-
         const sliced = rows.map(row => slice(row, 3));
         this.boxes = [
             [].concat(sliced[0][0], sliced[1][0], sliced[2][0]),
@@ -59,7 +57,6 @@ const rootVm = new Vue({
     },
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
-        rows: undefined,
         boxes: undefined,
     }),
     methods: {
