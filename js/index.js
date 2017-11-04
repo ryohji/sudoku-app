@@ -16,8 +16,9 @@ const slice = (() => {
 /**
  * manage each number cell by the object
  * {
- *   type:: String, -- 'given' if number is given, or 'free'.
- *   value:: Number | Array, -- Number if type === 'given', or Array of memo values.
+ *   index :: Number, -- row based index of the cell.
+ *   value :: Number, -- a number between 0 to 9. Non zero number represents 'given'.
+ *   memo  :: Array,  -- array of the numbers, those of which can be placed, user considers.
  * }
  */
 const rootVm = new Vue({
@@ -28,8 +29,8 @@ const rootVm = new Vue({
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])" class="cell">
-                        <span v-if="cell.type === 'given'" class="given">{{ cell.value }}</span>
-                        <div  v-else class="memo" v-for="memo in slice(cell.value, 3)">
+                        <span v-if="cell.value" class="given">{{ cell.value }}</span>
+                        <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
                             <span v-for="n in memo">{{ n }}</span>
                         </div>
                     </span>
@@ -38,8 +39,8 @@ const rootVm = new Vue({
         </div>
     </div>`,
     created: function() {
-        const makeCellObject = n => n ? { type: 'given', value: n, } : { type: 'free', value: [1,2,3,4,5,6,7,8,9,], };
-        const rows = slice(Array.from(this.board).map(Number).map(makeCellObject), 9);
+        const makeCellObject = (n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], });
+        const rows = slice(Array.from(this.board).map(makeCellObject), 9);
         const sliced = rows.map(row => slice(row, 3));
         this.boxes = [
             [].concat(sliced[0][0], sliced[1][0], sliced[2][0]),
