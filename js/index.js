@@ -32,18 +32,19 @@ const rootVm = new Vue({
     computed: {
         boxes: function() {
             const rows = this.rows;
+            const sliced = rows.map(row => slice(row, 3));
             return [
-                [].concat(rows[0].slice(0, 3), rows[1].slice(0, 3), rows[2].slice(0, 3)),
-                [].concat(rows[0].slice(3, 6), rows[1].slice(3, 6), rows[2].slice(3, 6)),
-                [].concat(rows[0].slice(6, 9), rows[1].slice(6, 9), rows[2].slice(6, 9)),
+                [].concat(sliced[0][0], sliced[1][0], sliced[2][0]),
+                [].concat(sliced[0][1], sliced[1][1], sliced[2][1]),
+                [].concat(sliced[0][2], sliced[1][2], sliced[2][2]),
+                
+                [].concat(sliced[3][0], sliced[4][0], sliced[5][0]),
+                [].concat(sliced[3][1], sliced[4][1], sliced[5][1]),
+                [].concat(sliced[3][2], sliced[4][2], sliced[5][2]),
 
-                [].concat(rows[3].slice(0, 3), rows[4].slice(0, 3), rows[5].slice(0, 3)),
-                [].concat(rows[3].slice(3, 6), rows[4].slice(3, 6), rows[5].slice(3, 6)),
-                [].concat(rows[3].slice(6, 9), rows[4].slice(6, 9), rows[5].slice(6, 9)),
-
-                [].concat(rows[6].slice(0, 3), rows[7].slice(0, 3), rows[8].slice(0, 3)),
-                [].concat(rows[6].slice(3, 6), rows[7].slice(3, 6), rows[8].slice(3, 6)),
-                [].concat(rows[6].slice(6, 9), rows[7].slice(6, 9), rows[8].slice(6, 9)),
+                [].concat(sliced[6][0], sliced[7][0], sliced[8][0]),
+                [].concat(sliced[6][1], sliced[7][1], sliced[8][1]),
+                [].concat(sliced[6][2], sliced[7][2], sliced[8][2]),
             ];
         },
     },
