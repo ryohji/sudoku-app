@@ -1,15 +1,15 @@
-const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
-
 const slice = (() => {
+    const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
     const reduceConcat = a => a.length ? a.reduce((a, b) => [a].concat(reduceConcat(b))) : [];
 
     return (array, n) => {
-        var p = array;
+        const splitted = splitAt(array, n);
+        var p = splitted;
         while (p[1].length !== 0) {
             p[1] = splitAt(p[1], n);
             p = p[1];
         }
-        return reduceConcat(array);
+        return reduceConcat(splitted);
     };
 })();
 
@@ -48,7 +48,7 @@ const rootVm = new Vue({
         },
     },
     created: function() {
-        this.rows = slice(splitAt(Array.from(this.board).map(Number), 9));
+        this.rows = slice(Array.from(this.board).map(Number), 9);
     },
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
