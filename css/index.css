@@ -26,15 +26,30 @@
 .cell {
     display: inline-block;
     text-align: center;
-    line-height: 2em;
     vertical-align: middle;
-    width: 2em;
-    height: 2em;
+    font-size: 16pt;
+    line-height: 27pt;
+    width: 27pt;
+    height: 27pt;
     border-color: silver;
     border-width: 1px 0 0 1px;
     border-style: solid;
 }
 
-.cell.given {
+.cell .given {
     font-family: 'Droid Sans', sans-serif;
+}
+
+.memo {
+    line-height: 1em;
+}
+
+.memo > span {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 6.5pt;
+    line-height: 9pt;
+    width: 9pt;
+    height: 9pt;
 }
