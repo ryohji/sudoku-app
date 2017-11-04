@@ -13,24 +13,33 @@ const slice = (() => {
     };
 })();
 
+/**
+ * manage each number cell by the object
+ * {
+ *   type:: String, -- 'given' if number is given, or 'free'.
+ *   value:: Number | Array, -- Number if type === 'given', or Array of memo values.
+ * }
+ */
 const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div class="boxes">
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
-            <div class="box" v-for="numbers in boxes.slice(span[0], span[1])">
+            <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
-                    <span v-for="n in numbers.slice(span[0], span[1])" :class="{'cell': 1, given: n}">{{
-                        n || ''
-                    }}<div v-if="!n && !memo.hidden" class="memo" v-for="memo in [[1,2,3],[4,5,6],[7,8,9]]">
-                    <span v-for="n in memo">{{ n }}</span>
-                    </div></span>
+                    <span v-for="cell in values.slice(span[0], span[1])" class="cell">
+                        <span v-if="cell.type === 'given'" class="given">{{ cell.value }}</span>
+                        <div  v-else class="memo" v-for="memo in slice(cell.value, 3)">
+                            <span v-for="n in memo">{{ n }}</span>
+                        </div>
+                    </span>
                 </div>
             </div>
         </div>
     </div>`,
     created: function() {
-        const rows = slice(Array.from(this.board).map(Number), 9);
+        const makeCellObject = n => n ? { type: 'given', value: n, } : { type: 'free', value: [1,2,3,4,5,6,7,8,9,], };
+        const rows = slice(Array.from(this.board).map(Number).map(makeCellObject), 9);
         this.rows = rows;
 
         const sliced = rows.map(row => slice(row, 3));
@@ -47,13 +56,13 @@ const rootVm = new Vue({
             [].concat(sliced[6][1], sliced[7][1], sliced[8][1]),
             [].concat(sliced[6][2], sliced[7][2], sliced[8][2]),
         ];
-
-        this.memo.data = Array.from({length: 81}).map(_ => [1,2,3,4,5,6,7,8,9,]);
     },
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
         rows: undefined,
         boxes: undefined,
-        memo: { hidden: false, },
     }),
+    methods: {
+        slice: slice,
+    },
 });
