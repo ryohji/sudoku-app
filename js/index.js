@@ -22,7 +22,7 @@ const rootVm = new Vue({
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="n in numbers.slice(span[0], span[1])" :class="{'cell': 1, given: n}">{{
                         n || ''
-                    }}<div v-if="!n" class="memo" v-for="memo in [[1,2,3],[4,5,6],[7,8,9]]">
+                    }}<div v-if="!n && !memo.hidden" class="memo" v-for="memo in [[1,2,3],[4,5,6],[7,8,9]]">
                     <span v-for="n in memo">{{ n }}</span>
                     </div></span>
                 </div>
@@ -49,9 +49,11 @@ const rootVm = new Vue({
     },
     created: function() {
         this.rows = slice(Array.from(this.board).map(Number), 9);
+        this.memo.data = Array.from({length: 81}).map(_ => [1,2,3,4,5,6,7,8,9,]);
     },
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
         rows: undefined,
+        memo: { hidden: false, },
     }),
 });
