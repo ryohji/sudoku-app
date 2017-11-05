@@ -40,20 +40,18 @@ const rootVm = new Vue({
     </div>`,
     created: function() {
         const makeCellObject = (n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], });
-        const rows = slice(Array.from(this.board).map(makeCellObject), 9);
-        const sliced = rows.map(row => slice(row, 3));
+        const cells = Array.from(this.board).map(makeCellObject);
+        const offset = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
         this.boxes = [
-            [].concat(sliced[0][0], sliced[1][0], sliced[2][0]),
-            [].concat(sliced[0][1], sliced[1][1], sliced[2][1]),
-            [].concat(sliced[0][2], sliced[1][2], sliced[2][2]),
-            
-            [].concat(sliced[3][0], sliced[4][0], sliced[5][0]),
-            [].concat(sliced[3][1], sliced[4][1], sliced[5][1]),
-            [].concat(sliced[3][2], sliced[4][2], sliced[5][2]),
-
-            [].concat(sliced[6][0], sliced[7][0], sliced[8][0]),
-            [].concat(sliced[6][1], sliced[7][1], sliced[8][1]),
-            [].concat(sliced[6][2], sliced[7][2], sliced[8][2]),
+            cells.filter(cell => offset.map(o => o +  0).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o +  3).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o +  6).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o + 27).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o + 30).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o + 33).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o + 54).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o + 57).includes(cell.index)),
+            cells.filter(cell => offset.map(o => o + 60).includes(cell.index)),
         ];
     },
     data: () => new Object({
