@@ -28,7 +28,10 @@ const rootVm = new Vue({
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
-                    <span v-for="cell in values.slice(span[0], span[1])" class="cell">
+                    <span v-for="cell in values.slice(span[0], span[1])"
+                    :class="{cell: 1, hover: hovering.includes(cell.index), }"
+                    @mouseenter="hover = cell.index" @mouseleave="hover = null"
+                    >
                         <span v-if="cell.value" class="given">{{ cell.value }}</span>
                         <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
                             <span v-for="n in memo">{{ n }}</span>
@@ -38,6 +41,26 @@ const rootVm = new Vue({
             </div>
         </div>
     </div>`,
+    computed: {
+        hovering: (() => {
+            const ONE_TO_EIGHT = Array.from({length: 9}).map((_, index) => index);
+            return function() {
+                const hover = this.hover;
+                if (hover) {
+                    const col = hover % 9;
+                    const row = (hover - col) / 9;
+                    const idx = ~~(col / 3) + ~~(row / 3) * 3;
+                    const boxOffset = [0, 3, 6, 27, 30, 33, 54, 57, 60][idx];
+                    return [].concat(ONE_TO_EIGHT.map(v => v + row * 9),
+                    ONE_TO_EIGHT.map(v => v * 9 + col),
+                    [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset)
+                    );
+                } else {
+                    return [];
+                }
+            };
+        })(),
+    },
     created: function() {
         const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
         const INDICES = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
@@ -48,6 +71,7 @@ const rootVm = new Vue({
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
         boxes: undefined,
+        hover: null,
     }),
     methods: {
         slice: slice,
