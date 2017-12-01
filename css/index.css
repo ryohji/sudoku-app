@@ -36,6 +36,10 @@
     border-style: solid;
 }
 
+.cell.hover {
+    background-color: skyblue;
+}
+
 .cell .given {
     font-family: 'Droid Sans', sans-serif;
 }
