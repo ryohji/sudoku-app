@@ -62,7 +62,10 @@ const rootVm = new Vue({
                     [0, 1, 2, 3, 4, 5, 6, 7, 8].map(v => v + row * 9),
                     [0, 1, 2, 3, 4, 5, 6, 7, 8].map(v => v * 9 + col),
                     [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset),
-                ].reduce((a, b) => a.concat(b)).map(index => this.cells[index]);
+                ]
+                .reduce((a, b) => a.concat(b)) // flatten array
+                .filter((value, index, array) => array.indexOf(value) === index) // remove duplicates
+                .map(index => this.cells[index]);
             } else {
                 return [];
             }
