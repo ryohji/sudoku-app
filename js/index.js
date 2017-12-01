@@ -40,7 +40,7 @@ const rootVm = new Vue({
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])"
                     :class="{cell: 1, hover: affected.includes(indexOf(cell)), }"
-                    @mouseenter="hover = indexOf(cell)" @mouseleave="hover = null"
+                    @mouseenter="pointed = indexOf(cell)" @mouseleave="pointed = null"
                     >
                     <span v-if="cell.value" class="given">{{ cell.value }}</span>
                     <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
@@ -55,10 +55,10 @@ const rootVm = new Vue({
         affected: (() => {
             const ONE_TO_EIGHT = Array.from({length: 9}).map((_, index) => index);
             return function() {
-                const hover = this.hover;
-                if (hover) {
-                    const col = hover % 9;
-                    const row = (hover - col) / 9;
+                const pointed = this.pointed;
+                if (pointed) {
+                    const col = pointed % 9;
+                    const row = (pointed - col) / 9;
                     const idx = ~~(col / 3) + ~~(row / 3) * 3;
                     const boxOffset = [0, 3, 6, 27, 30, 33, 54, 57, 60][idx];
                     return [].concat(ONE_TO_EIGHT.map(v => v + row * 9),
@@ -83,7 +83,7 @@ const rootVm = new Vue({
         cells: Array.from(
             '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
         ).map(n => new Object({ value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], })),
-        hover: null,
+        pointed: null,
     }),
     methods: {
         slice: slice,
