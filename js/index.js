@@ -15,6 +15,7 @@ const rootVm = new Vue({
     @keydown.56="pointed.value = 8"
     @keydown.57="pointed.value = 9"
     @keydown.space="pointed && pointed.value && affected.forEach(cell => cell.memo.splice(pointed.value - 1, 1, ''))"
+    @mouseenter="event => event.target.focus()"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
