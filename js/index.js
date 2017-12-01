@@ -80,13 +80,10 @@ const rootVm = new Vue({
             return OFFSETS.map(offset => INDICES.map(index => this.cells[index + offset]));
         },
     },
-    created: function() {
-        const makeCellObject = (n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], });
-        this.cells = Array.from(this.board).map(makeCellObject);
-    },
     data: () => new Object({
-        board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
-        cells: undefined,
+        cells: Array.from(
+            '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
+        ).map((n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], })),
         hover: null,
     }),
     methods: {
