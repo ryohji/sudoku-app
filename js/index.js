@@ -25,21 +25,21 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.49="hoveringCells.forEach(cell => cell.memo.splice(0, 1, ''))"
-    @keydown.50="hoveringCells.forEach(cell => cell.memo.splice(1, 1, ''))"
-    @keydown.51="hoveringCells.forEach(cell => cell.memo.splice(2, 1, ''))"
-    @keydown.52="hoveringCells.forEach(cell => cell.memo.splice(3, 1, ''))"
-    @keydown.53="hoveringCells.forEach(cell => cell.memo.splice(4, 1, ''))"
-    @keydown.54="hoveringCells.forEach(cell => cell.memo.splice(5, 1, ''))"
-    @keydown.55="hoveringCells.forEach(cell => cell.memo.splice(6, 1, ''))"
-    @keydown.56="hoveringCells.forEach(cell => cell.memo.splice(7, 1, ''))"
-    @keydown.57="hoveringCells.forEach(cell => cell.memo.splice(8, 1, ''))"
+    @keydown.49="affectedCells.forEach(cell => cell.memo.splice(0, 1, ''))"
+    @keydown.50="affectedCells.forEach(cell => cell.memo.splice(1, 1, ''))"
+    @keydown.51="affectedCells.forEach(cell => cell.memo.splice(2, 1, ''))"
+    @keydown.52="affectedCells.forEach(cell => cell.memo.splice(3, 1, ''))"
+    @keydown.53="affectedCells.forEach(cell => cell.memo.splice(4, 1, ''))"
+    @keydown.54="affectedCells.forEach(cell => cell.memo.splice(5, 1, ''))"
+    @keydown.55="affectedCells.forEach(cell => cell.memo.splice(6, 1, ''))"
+    @keydown.56="affectedCells.forEach(cell => cell.memo.splice(7, 1, ''))"
+    @keydown.57="affectedCells.forEach(cell => cell.memo.splice(8, 1, ''))"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])"
-                    :class="{cell: 1, hover: hovering.includes(indexOf(cell)), }"
+                    :class="{cell: 1, hover: affected.includes(indexOf(cell)), }"
                     @mouseenter="hover = indexOf(cell)" @mouseleave="hover = null"
                     >
                     <span v-if="cell.value" class="given">{{ cell.value }}</span>
@@ -52,7 +52,7 @@ const rootVm = new Vue({
         </div>
     </div>`,
     computed: {
-        hovering: (() => {
+        affected: (() => {
             const ONE_TO_EIGHT = Array.from({length: 9}).map((_, index) => index);
             return function() {
                 const hover = this.hover;
@@ -70,8 +70,8 @@ const rootVm = new Vue({
                 }
             };
         })(),
-        hoveringCells: function() {
-            return this.hovering.map(index => this.cells[index]);
+        affectedCells: function() {
+            return this.affected.map(index => this.cells[index]);
         },
         boxes: function() {
             const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
