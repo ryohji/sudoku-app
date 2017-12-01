@@ -26,15 +26,15 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.49="hoveringCells.forEach(cell => cell.memo[0] = '')"
-    @keydown.50="hoveringCells.forEach(cell => cell.memo[1] = '')"
-    @keydown.51="hoveringCells.forEach(cell => cell.memo[2] = '')"
-    @keydown.52="hoveringCells.forEach(cell => cell.memo[3] = '')"
-    @keydown.53="hoveringCells.forEach(cell => cell.memo[4] = '')"
-    @keydown.54="hoveringCells.forEach(cell => cell.memo[5] = '')"
-    @keydown.55="hoveringCells.forEach(cell => cell.memo[6] = '')"
-    @keydown.56="hoveringCells.forEach(cell => cell.memo[7] = '')"
-    @keydown.57="hoveringCells.forEach(cell => cell.memo[8] = '')"
+    @keydown.49="hoveringCells.forEach(cell => cell.memo.splice(0, 1, ''))"
+    @keydown.50="hoveringCells.forEach(cell => cell.memo.splice(1, 1, ''))"
+    @keydown.51="hoveringCells.forEach(cell => cell.memo.splice(2, 1, ''))"
+    @keydown.52="hoveringCells.forEach(cell => cell.memo.splice(3, 1, ''))"
+    @keydown.53="hoveringCells.forEach(cell => cell.memo.splice(4, 1, ''))"
+    @keydown.54="hoveringCells.forEach(cell => cell.memo.splice(5, 1, ''))"
+    @keydown.55="hoveringCells.forEach(cell => cell.memo.splice(6, 1, ''))"
+    @keydown.56="hoveringCells.forEach(cell => cell.memo.splice(7, 1, ''))"
+    @keydown.57="hoveringCells.forEach(cell => cell.memo.splice(8, 1, ''))"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
