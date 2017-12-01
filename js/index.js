@@ -1,18 +1,3 @@
-const slice = (() => {
-    const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
-    const reduceConcat = a => a.length ? a.reduce((a, b) => [a].concat(reduceConcat(b))) : [];
-
-    return (array, n) => {
-        const splitted = splitAt(array, n);
-        var p = splitted;
-        while (p[1].length !== 0) {
-            p[1] = splitAt(p[1], n);
-            p = p[1];
-        }
-        return reduceConcat(splitted);
-    };
-})();
-
 /**
  * manage each number cell by the object
  * {
@@ -69,7 +54,20 @@ const rootVm = new Vue({
         pointed: null,
     }),
     methods: {
-        slice: slice,
+        slice: (() => {
+            const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
+            const reduceConcat = a => a.length ? a.reduce((a, b) => [a].concat(reduceConcat(b))) : [];
+        
+            return (array, n) => {
+                const splitted = splitAt(array, n);
+                var p = splitted;
+                while (p[1].length !== 0) {
+                    p[1] = splitAt(p[1], n);
+                    p = p[1];
+                }
+                return reduceConcat(splitted);
+            };
+        })(),
         affectedIndices: index => {
             const col = index % 9;
             const row = (index - col) / 9;
