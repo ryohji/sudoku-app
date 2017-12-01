@@ -1,10 +1,3 @@
-/**
- * manage each number cell by the object
- * {
- *   value :: Number, -- a number between 0 to 9. Non zero number represents 'given'.
- *   memo  :: Array,  -- array of the numbers, those of which can be placed, user considers.
- * }
- */
 const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
@@ -48,6 +41,12 @@ const rootVm = new Vue({
         },
     },
     data: () => new Object({
+        /*
+        manage each number cell by the object: {
+            {Number} value, -- a number between 0 to 9. Non zero number represents 'given'.
+            {Array}  memo,  -- array of the numbers, those of which can be placed, user considers.
+        }
+        */
         cells: Array.from(
             '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
         ).map(n => new Object({ value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], })),
