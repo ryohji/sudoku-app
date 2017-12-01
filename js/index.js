@@ -75,17 +75,19 @@ const rootVm = new Vue({
             const hovering = this.hovering;
             return this.boxes.reduce((a, b) => a.concat(b)).filter(cell => hovering.includes(cell.index));
         },
+        boxes: function() {
+            const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
+            const INDICES = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
+            return OFFSETS.map(offset => INDICES.map(index => this.cells[index + offset]));
+        },
     },
     created: function() {
-        const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
-        const INDICES = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
         const makeCellObject = (n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], });
-        const cells = Array.from(this.board).map(makeCellObject);
-        this.boxes = OFFSETS.map(offset => INDICES.map(index => cells[index + offset]));
+        this.cells = Array.from(this.board).map(makeCellObject);
     },
     data: () => new Object({
         board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
-        boxes: undefined,
+        cells: undefined,
         hover: null,
     }),
     methods: {
