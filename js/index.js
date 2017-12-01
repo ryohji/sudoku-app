@@ -24,7 +24,18 @@ const slice = (() => {
 const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
-    <div class="boxes">
+    <div class="boxes"
+    tabindex="0"
+    @keydown.49="hoveringCells.forEach(cell => cell.memo[0] = '')"
+    @keydown.50="hoveringCells.forEach(cell => cell.memo[1] = '')"
+    @keydown.51="hoveringCells.forEach(cell => cell.memo[2] = '')"
+    @keydown.52="hoveringCells.forEach(cell => cell.memo[3] = '')"
+    @keydown.53="hoveringCells.forEach(cell => cell.memo[4] = '')"
+    @keydown.54="hoveringCells.forEach(cell => cell.memo[5] = '')"
+    @keydown.55="hoveringCells.forEach(cell => cell.memo[6] = '')"
+    @keydown.56="hoveringCells.forEach(cell => cell.memo[7] = '')"
+    @keydown.57="hoveringCells.forEach(cell => cell.memo[8] = '')"
+    >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
@@ -32,11 +43,11 @@ const rootVm = new Vue({
                     :class="{cell: 1, hover: hovering.includes(cell.index), }"
                     @mouseenter="hover = cell.index" @mouseleave="hover = null"
                     >
-                        <span v-if="cell.value" class="given">{{ cell.value }}</span>
-                        <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
-                            <span v-for="n in memo">{{ n }}</span>
-                        </div>
-                    </span>
+                    <span v-if="cell.value" class="given">{{ cell.value }}</span>
+                    <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
+                        <span v-for="n in memo">{{ n }}</span>
+                    </div>
+                </span>
                 </div>
             </div>
         </div>
@@ -60,6 +71,10 @@ const rootVm = new Vue({
                 }
             };
         })(),
+        hoveringCells: function() {
+            const hovering = this.hovering;
+            return this.boxes.reduce((a, b) => a.concat(b)).filter(cell => hovering.includes(cell.index));
+        },
     },
     created: function() {
         const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
