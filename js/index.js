@@ -26,15 +26,15 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.49="hoveringCells.forEach(cell => cell.memo[0] = '')"
-    @keydown.50="hoveringCells.forEach(cell => cell.memo[1] = '')"
-    @keydown.51="hoveringCells.forEach(cell => cell.memo[2] = '')"
-    @keydown.52="hoveringCells.forEach(cell => cell.memo[3] = '')"
-    @keydown.53="hoveringCells.forEach(cell => cell.memo[4] = '')"
-    @keydown.54="hoveringCells.forEach(cell => cell.memo[5] = '')"
-    @keydown.55="hoveringCells.forEach(cell => cell.memo[6] = '')"
-    @keydown.56="hoveringCells.forEach(cell => cell.memo[7] = '')"
-    @keydown.57="hoveringCells.forEach(cell => cell.memo[8] = '')"
+    @keydown.49="hoveringCells.forEach(cell => cell.memo.splice(0, 1, ''))"
+    @keydown.50="hoveringCells.forEach(cell => cell.memo.splice(1, 1, ''))"
+    @keydown.51="hoveringCells.forEach(cell => cell.memo.splice(2, 1, ''))"
+    @keydown.52="hoveringCells.forEach(cell => cell.memo.splice(3, 1, ''))"
+    @keydown.53="hoveringCells.forEach(cell => cell.memo.splice(4, 1, ''))"
+    @keydown.54="hoveringCells.forEach(cell => cell.memo.splice(5, 1, ''))"
+    @keydown.55="hoveringCells.forEach(cell => cell.memo.splice(6, 1, ''))"
+    @keydown.56="hoveringCells.forEach(cell => cell.memo.splice(7, 1, ''))"
+    @keydown.57="hoveringCells.forEach(cell => cell.memo.splice(8, 1, ''))"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
@@ -80,13 +80,10 @@ const rootVm = new Vue({
             return OFFSETS.map(offset => INDICES.map(index => this.cells[index + offset]));
         },
     },
-    created: function() {
-        const makeCellObject = (n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], });
-        this.cells = Array.from(this.board).map(makeCellObject);
-    },
     data: () => new Object({
-        board: '060003001200500600007090500000400090800000006010005000002010700004009003700200040', // 朝日新聞beパズル 2017/10/07 掲載分
-        cells: undefined,
+        cells: Array.from(
+            '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
+        ).map((n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], })),
         hover: null,
     }),
     methods: {
