@@ -3,15 +3,18 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.49="affected.forEach(cell => cell.memo.splice(0, 1, ''))"
-    @keydown.50="affected.forEach(cell => cell.memo.splice(1, 1, ''))"
-    @keydown.51="affected.forEach(cell => cell.memo.splice(2, 1, ''))"
-    @keydown.52="affected.forEach(cell => cell.memo.splice(3, 1, ''))"
-    @keydown.53="affected.forEach(cell => cell.memo.splice(4, 1, ''))"
-    @keydown.54="affected.forEach(cell => cell.memo.splice(5, 1, ''))"
-    @keydown.55="affected.forEach(cell => cell.memo.splice(6, 1, ''))"
-    @keydown.56="affected.forEach(cell => cell.memo.splice(7, 1, ''))"
-    @keydown.57="affected.forEach(cell => cell.memo.splice(8, 1, ''))"
+    @keydown.delete="pointed.value = 0"
+    @keydown.48="pointed.value = 0"
+    @keydown.49="pointed.value = 1"
+    @keydown.50="pointed.value = 2"
+    @keydown.51="pointed.value = 3"
+    @keydown.52="pointed.value = 4"
+    @keydown.53="pointed.value = 5"
+    @keydown.54="pointed.value = 6"
+    @keydown.55="pointed.value = 7"
+    @keydown.56="pointed.value = 8"
+    @keydown.57="pointed.value = 9"
+    @keydown.space="pointed && pointed.value && affected.forEach(cell => cell.memo.splice(pointed.value - 1, 1, ''))"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
@@ -21,6 +24,7 @@ const rootVm = new Vue({
                     @mouseenter="pointed = cell" @mouseleave="pointed = null"
                     >
                     <span v-if="cell.given" class="given">{{ cell.value }}</span>
+                    <span v-else-if="cell.value">{{ cell.value }}</span>
                     <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
                         <span v-for="n in memo">{{ n }}</span>
                     </div>
