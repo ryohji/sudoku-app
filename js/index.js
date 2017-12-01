@@ -25,22 +25,22 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.49="affectedCells.forEach(cell => cell.memo.splice(0, 1, ''))"
-    @keydown.50="affectedCells.forEach(cell => cell.memo.splice(1, 1, ''))"
-    @keydown.51="affectedCells.forEach(cell => cell.memo.splice(2, 1, ''))"
-    @keydown.52="affectedCells.forEach(cell => cell.memo.splice(3, 1, ''))"
-    @keydown.53="affectedCells.forEach(cell => cell.memo.splice(4, 1, ''))"
-    @keydown.54="affectedCells.forEach(cell => cell.memo.splice(5, 1, ''))"
-    @keydown.55="affectedCells.forEach(cell => cell.memo.splice(6, 1, ''))"
-    @keydown.56="affectedCells.forEach(cell => cell.memo.splice(7, 1, ''))"
-    @keydown.57="affectedCells.forEach(cell => cell.memo.splice(8, 1, ''))"
+    @keydown.49="affected.forEach(cell => cell.memo.splice(0, 1, ''))"
+    @keydown.50="affected.forEach(cell => cell.memo.splice(1, 1, ''))"
+    @keydown.51="affected.forEach(cell => cell.memo.splice(2, 1, ''))"
+    @keydown.52="affected.forEach(cell => cell.memo.splice(3, 1, ''))"
+    @keydown.53="affected.forEach(cell => cell.memo.splice(4, 1, ''))"
+    @keydown.54="affected.forEach(cell => cell.memo.splice(5, 1, ''))"
+    @keydown.55="affected.forEach(cell => cell.memo.splice(6, 1, ''))"
+    @keydown.56="affected.forEach(cell => cell.memo.splice(7, 1, ''))"
+    @keydown.57="affected.forEach(cell => cell.memo.splice(8, 1, ''))"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])"
-                    :class="{cell: 1, hover: affected.includes(indexOf(cell)), }"
-                    @mouseenter="pointed = indexOf(cell)" @mouseleave="pointed = null"
+                    :class="{cell: 1, hover: affected.includes(cell), }"
+                    @mouseenter="pointed = cell" @mouseleave="pointed = null"
                     >
                     <span v-if="cell.value" class="given">{{ cell.value }}</span>
                     <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
@@ -55,8 +55,8 @@ const rootVm = new Vue({
         affected: (() => {
             const ONE_TO_EIGHT = Array.from({length: 9}).map((_, index) => index);
             return function() {
-                const pointed = this.pointed;
-                if (pointed) {
+                const pointed = this.cells.indexOf(this.pointed);
+                if (pointed !== -1) {
                     const col = pointed % 9;
                     const row = (pointed - col) / 9;
                     const idx = ~~(col / 3) + ~~(row / 3) * 3;
@@ -64,15 +64,12 @@ const rootVm = new Vue({
                     return [].concat(ONE_TO_EIGHT.map(v => v + row * 9),
                     ONE_TO_EIGHT.map(v => v * 9 + col),
                     [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset)
-                    );
+                    ).map(index => this.cells[index]);
                 } else {
                     return [];
                 }
             };
         })(),
-        affectedCells: function() {
-            return this.affected.map(index => this.cells[index]);
-        },
         boxes: function() {
             const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
             const INDICES = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
@@ -87,6 +84,5 @@ const rootVm = new Vue({
     }),
     methods: {
         slice: slice,
-        indexOf: function(cell) { return this.cells.indexOf(cell); },
     },
 });
