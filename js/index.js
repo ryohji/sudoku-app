@@ -16,7 +16,6 @@ const slice = (() => {
 /**
  * manage each number cell by the object
  * {
- *   index :: Number, -- row based index of the cell.
  *   value :: Number, -- a number between 0 to 9. Non zero number represents 'given'.
  *   memo  :: Array,  -- array of the numbers, those of which can be placed, user considers.
  * }
@@ -40,8 +39,8 @@ const rootVm = new Vue({
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])"
-                    :class="{cell: 1, hover: hovering.includes(cell.index), }"
-                    @mouseenter="hover = cell.index" @mouseleave="hover = null"
+                    :class="{cell: 1, hover: hovering.includes(indexOf(cell)), }"
+                    @mouseenter="hover = indexOf(cell)" @mouseleave="hover = null"
                     >
                     <span v-if="cell.value" class="given">{{ cell.value }}</span>
                     <div  v-else class="memo" v-for="memo in slice(cell.memo, 3)">
@@ -83,10 +82,11 @@ const rootVm = new Vue({
     data: () => new Object({
         cells: Array.from(
             '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
-        ).map((n, index) => new Object({ index: index, value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], })),
+        ).map(n => new Object({ value: Number(n), memo: [1,2,3,4,5,6,7,8,9,], })),
         hover: null,
     }),
     methods: {
         slice: slice,
+        indexOf: function(cell) { return this.cells.indexOf(cell); },
     },
 });
