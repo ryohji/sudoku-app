@@ -72,8 +72,7 @@ const rootVm = new Vue({
             };
         })(),
         hoveringCells: function() {
-            const hovering = this.hovering;
-            return this.boxes.reduce((a, b) => a.concat(b)).filter(cell => hovering.includes(cell.index));
+            return this.hovering.map(index => this.cells[index]);
         },
         boxes: function() {
             const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
