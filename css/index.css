@@ -1,0 +1,59 @@
+* {
+    font-family: 'Droid Sans', sans-serif;
+    font-family: 'Droid Serif', serif;
+}
+
+.boxes {
+    display: inline-block;
+    border: 0 solid black;
+    border-width: 0 1px 1px 0;
+}
+
+.box {
+    display: inline-block;
+    border: 0 solid black;
+    border-width: 1px 0 0 1px;
+}
+
+.row-in-box:first-child > .cell {
+    border-top-style: none;
+}
+
+.cell:first-child {
+    border-left-style: none;
+}
+
+.cell {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16pt;
+    line-height: 27pt;
+    width: 27pt;
+    height: 27pt;
+    border-color: silver;
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+}
+
+.cell.hover {
+    background-color: skyblue;
+}
+
+.cell .given {
+    font-family: 'Droid Sans', sans-serif;
+}
+
+.memo {
+    line-height: 1em;
+}
+
+.memo > span {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 6.5pt;
+    line-height: 9pt;
+    width: 9pt;
+    height: 9pt;
+}
