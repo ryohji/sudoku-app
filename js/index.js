@@ -52,25 +52,21 @@ const rootVm = new Vue({
         </div>
     </div>`,
     computed: {
-        affected: (() => {
-            const ONE_TO_EIGHT = Array.from({length: 9}).map((_, index) => index);
-            return function() {
-                const pointed = this.cells.indexOf(this.pointed);
-                if (pointed !== -1) {
-                    const col = pointed % 9;
-                    const row = (pointed - col) / 9;
-                    const box = ~~(col / 3) + ~~(row / 3) * 3;
-                    const boxOffset = [0, 3, 6, 27, 30, 33, 54, 57, 60][box];
-                    return [
-                        ONE_TO_EIGHT.map(v => v + row * 9),
-                        ONE_TO_EIGHT.map(v => v * 9 + col),
-                        [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset),
-                    ].reduce((a, b) => a.concat(b)).map(index => this.cells[index]);
-                } else {
-                    return [];
-                }
-            };
-        })(),
+        affected: function() {
+            const pointed = this.cells.indexOf(this.pointed);
+            if (pointed !== -1) {
+                const col = pointed % 9;
+                const row = (pointed - col) / 9;
+                const boxOffset = ~~(col / 3) * 3 + ~~(row / 3) * 27;
+                return [
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8].map(v => v + row * 9),
+                    [0, 1, 2, 3, 4, 5, 6, 7, 8].map(v => v * 9 + col),
+                    [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset),
+                ].reduce((a, b) => a.concat(b)).map(index => this.cells[index]);
+            } else {
+                return [];
+            }
+        },
         boxes: function() {
             const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
             const INDICES = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
