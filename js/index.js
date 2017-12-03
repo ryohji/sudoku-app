@@ -37,7 +37,7 @@ const rootVm = new Vue({
     computed: {
         affected: function() {
             const pointed = this.cells.indexOf(this.pointed);
-            return pointed === -1 ? [] : this.affectedIndices(pointed).map(index => this.cells[index]);
+            return pointed === -1 ? [] : this.affectedIndices(pointed).filter(index => index !== pointed).map(index => this.cells[index]);
         },
         boxes: function() {
             const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
