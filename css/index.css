@@ -34,6 +34,7 @@
     border-color: silver;
     border-width: 1px 0 0 1px;
     border-style: solid;
+    cursor: pointer;
 }
 
 .cell.hover {
