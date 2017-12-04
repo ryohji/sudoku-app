@@ -3,17 +3,17 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.delete="pointedCell.value = 0"
-    @keydown.48="pointedCell.value = 0"
-    @keydown.49="pointedCell.value = 1"
-    @keydown.50="pointedCell.value = 2"
-    @keydown.51="pointedCell.value = 3"
-    @keydown.52="pointedCell.value = 4"
-    @keydown.53="pointedCell.value = 5"
-    @keydown.54="pointedCell.value = 6"
-    @keydown.55="pointedCell.value = 7"
-    @keydown.56="pointedCell.value = 8"
-    @keydown.57="pointedCell.value = 9"
+    @keydown.delete="place(0)"
+    @keydown.48="place(0)"
+    @keydown.49="place(1)"
+    @keydown.50="place(2)"
+    @keydown.51="place(3)"
+    @keydown.52="place(4)"
+    @keydown.53="place(5)"
+    @keydown.54="place(6)"
+    @keydown.55="place(7)"
+    @keydown.56="place(8)"
+    @keydown.57="place(9)"
     @keydown.space="affectedIndices.forEach(index => cells[index].memo.splice(pointedCell.value - 1, 1, false))"
     @click="affectedIndices.forEach(index => cells[index].memo.splice(pointedCell.value - 1, 1, false))"
     @mouseenter="event => event.target.focus()"
@@ -91,5 +91,8 @@ const rootVm = new Vue({
                 return reduceConcat(splitted);
             };
         })(),
+        place: function(number) {
+            (this.pointedCell || {value: undefined}).value = number;
+        },
     },
 });
