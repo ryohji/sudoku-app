@@ -27,27 +27,14 @@ const rootVm = new Vue({
     </div>`,
     computed: {
         affectedIndices: function() {
-            const index = this.pointed;
-            if (index === -1) {
-                return [];
-            } else {
-                const col = index % 9;
-                const row = (index - col) / 9;
-                const boxOffset = ~~(col / 3) * 3 + ~~(row / 3) * 27;
-                return [
-                    [0, 1, 2, 3, 4, 5, 6, 7, 8].map(v => v + row * 9),
-                    [0, 1, 2, 3, 4, 5, 6, 7, 8].map(v => v * 9 + col),
-                    [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset),
-                ]
-                .reduce((a, b) => a.concat(b)) // flatten array
-                .filter(value => value !== index) // remove pointed itself
-                .filter((value, index, array) => array.indexOf(value) === index); // remove duplicates
-            }
+            const included = indices => indices.includes(this.pointed);
+            return [this.indices.rows.find(included), this.indices.cols.find(included), this.indices.boxes.find(included)]
+            .reduce((a, b) => a.concat(b || []), []) // flatten array
+            .filter(value => value !== this.pointed) // remove pointed itself
+            .filter((value, index, array) => array.indexOf(value) === index); // remove duplicates
         },
         boxes: function() {
-            const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
-            const INDICES = [0, 1, 2, 9, 10, 11, 18, 19, 20,];
-            return OFFSETS.map(offset => INDICES.map(index => this.cells[index + offset]));
+            return this.indices.boxes.map(indices => indices.map(index => this.cells[index]));
         },
         cells: function() {
             /* manage each number cell by the object: {
@@ -77,6 +64,14 @@ const rootVm = new Vue({
                 return board;
             }, initial);
         },
+        indices: (() => {
+            const colNr = index => index % 9;
+            const boxNr = index => 3 * ~~(index / 27) + ~~((index % 9) / 3);
+            const rows = Array.from({length: 81, }).map((_, index) => index);
+            const cols = Array.from(rows).sort((a, b) => colNr(a) - colNr(b));
+            const boxes = Array.from(rows).sort((a, b) => boxNr(a) - boxNr(b));
+            return function() { return { rows: this.slice(rows, 9), cols: this.slice(cols, 9), boxes: this.slice(boxes, 9), }; };
+        })(),
         pointedCell: function() { return this.cells[this.pointed]; },
     },
     data: () => new Object({
