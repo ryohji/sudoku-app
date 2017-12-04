@@ -3,17 +3,7 @@ const rootVm = new Vue({
     template: `
     <div class="boxes"
     tabindex="0"
-    @keydown.delete="place(0)"
-    @keydown.48="place(0)"
-    @keydown.49="place(1)"
-    @keydown.50="place(2)"
-    @keydown.51="place(3)"
-    @keydown.52="place(4)"
-    @keydown.53="place(5)"
-    @keydown.54="place(6)"
-    @keydown.55="place(7)"
-    @keydown.56="place(8)"
-    @keydown.57="place(9)"
+    @keydown="onKey"
     @keydown.space="flush"
     @click="flush"
     @mouseenter="event => event.target.focus()"
@@ -67,12 +57,18 @@ const rootVm = new Vue({
             } */
             const initial = Array.from(
                 '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
-            ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9).fill(true), }));
+            ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9), }));
             const commands = this.history.commands.slice(0, this.history.current + 1);
             return commands.reduce((board, command) => {
                 switch(command.type) {
                 case 'place':
                     board[command.where].value = command.value;
+                    break;
+                case 'remark':
+                    board[command.where].memo.splice(command.value - 1, 1, true);
+                    break;
+                case 'unmark':
+                    board[command.where].memo.splice(command.value - 1, 1, false);
                     break;
                 case 'flush':
                     command.where.forEach(index => board[index].memo.splice(command.value - 1, 1, false));
@@ -103,11 +99,15 @@ const rootVm = new Vue({
                 return reduceConcat(splitted);
             };
         })(),
-        place: function(number) {
-            if (this.pointed !== -1) {
-                const history = this.history;
-                history.commands.push({type: 'place', value: number, where: this.pointed, when: new Date(), });
-                history.current += 1;
+        onKey: function(event) {
+            const match = /^Digit(.)$/.exec(event.code);
+            if (match && this.pointed !== -1) {
+                const type = event.altKey ? event.shiftKey ? 'unmark' : 'remark' : 'place';
+                this.history.commands.push({type: type, value: match[1], where: this.pointed, when: new Date(), });
+                this.history.current += 1;
+            } else if (event.code === 'Backspace') {
+                this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
+                this.history.current += 1;
             }
         },
         flush: function() {
