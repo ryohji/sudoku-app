@@ -47,17 +47,17 @@ const rootVm = new Vue({
         },
     },
     data: () => new Object({
-        /*
-        manage each number cell by the object: {
+        /* manage each number cell by the object: {
             {Boolean} given, -- true if the number is given for clue, otherwise false.
             {Number} value, -- a number between 0 to 9.
-            {Array} memo, -- array of the numbers, those of which can be placed, user considers.
-        }
-        */
+            {Array} memo, -- array of Boolean, each element represent the number those of which can be placed, user considers.
+        } */
         cells: Array.from(
             '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
-        ).map(n => new Object({ given: Number(n), value: Number(n), memo: Array(9).fill(true), })),
+        ).map(n => new Object({given: Number(n), value: Number(n), memo: Array(9).fill(true), })),
         pointed: null,
+        /* user operations. this backs undo/redo up */
+        history: {command: [], current: -1, },
     }),
     methods: {
         slice: (() => {
