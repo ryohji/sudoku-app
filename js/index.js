@@ -14,8 +14,8 @@ const rootVm = new Vue({
     @keydown.55="place(7)"
     @keydown.56="place(8)"
     @keydown.57="place(9)"
-    @keydown.space="affectedIndices.forEach(index => cells[index].memo.splice(pointedCell.value - 1, 1, false))"
-    @click="affectedIndices.forEach(index => cells[index].memo.splice(pointedCell.value - 1, 1, false))"
+    @keydown.space="flush"
+    @click="flush"
     @mouseenter="event => event.target.focus()"
     >
         <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
@@ -74,6 +74,9 @@ const rootVm = new Vue({
                 case 'place':
                     board[command.where].value = command.value;
                     break;
+                case 'flush':
+                    command.where.forEach(index => board[index].memo.splice(command.value - 1, 1, false));
+                    break;
                 }
                 return board;
             }, initial);
@@ -104,6 +107,13 @@ const rootVm = new Vue({
             if (this.pointed !== -1) {
                 const history = this.history;
                 history.commands.push({type: 'place', value: number, where: this.pointed, when: new Date(), });
+                history.current += 1;
+            }
+        },
+        flush: function() {
+            if (this.pointed !== -1) {
+                const history = this.history;
+                history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
                 history.current += 1;
             }
         },
