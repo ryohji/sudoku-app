@@ -51,18 +51,19 @@ const rootVm = new Vue({
             ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9), }));
             const commands = this.history.commands.slice(0, this.history.current + 1);
             return commands.reduce((board, command) => {
+                const target = board[command.where];
                 switch(command.type) {
                 case 'place':
-                    board[command.where].value = command.value;
+                    target.value = command.value;
                     break;
                 case 'remark':
-                    board[command.where].memo.splice(command.value - 1, 1, true);
+                    target.memo[command.value - 1] = true;
                     break;
                 case 'unmark':
-                    board[command.where].memo.splice(command.value - 1, 1, false);
+                    target.memo[command.value - 1] = false;
                     break;
                 case 'flush':
-                    command.where.forEach(index => board[index].memo.splice(command.value - 1, 1, false));
+                    command.where.forEach(index => board[index].memo[command.value - 1] = false);
                     break;
                 }
                 return board;
@@ -77,7 +78,7 @@ const rootVm = new Vue({
             const indices = { row: row, col: col, box: box, };
             return () => indices;
         })(),
-        pointedCell: function() { return this.cells[this.pointed]; },
+        pointedCell: function() { return this.cells[this.pointed] || {given: true, }; },
     },
     data: () => new Object({
         pointed: -1,
@@ -102,20 +103,23 @@ const rootVm = new Vue({
         onKey: function(event) {
             const match = /^Digit(.)$/.exec(event.code);
             if (match && this.pointed !== -1) {
-                const type = event.altKey ? event.shiftKey ? 'unmark' : 'remark' : 'place';
-                this.history.commands.push({type: type, value: match[1], where: this.pointed, when: new Date(), });
-                this.history.current += 1;
-            } else if (event.code === 'Backspace') {
+                if (event.altKey) {
+                    const type = event.shiftKey ? 'unmark' : 'remark';
+                    this.history.commands.push({type: type, value: match[1], where: this.pointed, when: new Date(), });
+                    this.history.current += 1;
+                } else if (!this.pointedCell.given) {
+                    this.history.commands.push({type: 'place', value: match[1], where: this.pointed, when: new Date(), });
+                    this.history.current += 1;
+                }
+            } else if (event.code === 'Backspace' && !this.pointedCell.given) {
                 this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
                 this.history.current += 1;
             }
         },
         flush: function() {
-            if (this.pointed !== -1) {
-                const history = this.history;
-                history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
-                history.current += 1;
-            }
+            const history = this.history;
+            history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
+            history.current += 1;
         },
     },
 });
