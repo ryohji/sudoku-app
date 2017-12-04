@@ -54,7 +54,7 @@ const rootVm = new Vue({
         } */
         cells: Array.from(
             '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
-        ).map(n => new Object({given: Number(n), value: Number(n), memo: Array(9).fill(true), })),
+        ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9).fill(true), })),
         pointed: null,
         /* user operations. this backs undo/redo up */
         history: {command: [], current: -1, },
