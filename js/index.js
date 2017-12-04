@@ -27,14 +27,18 @@ const rootVm = new Vue({
     </div>`,
     computed: {
         affectedIndices: function() {
-            const included = indices => indices.includes(this.pointed);
-            return [this.indices.rows.find(included), this.indices.cols.find(included), this.indices.boxes.find(included)]
-            .reduce((a, b) => a.concat(b || []), []) // flatten array
+            const get = array => {
+                const index = array.findIndex(x => x === this.pointed);
+                const start = 9 * ~~(index / 9);
+                return array.slice(start, start + (index !== -1 ? 9 : 0));
+            };
+            return [get(this.indices.row), get(this.indices.col), get(this.indices.box)]
+            .reduce((a, b) => a.concat(b)) // flatten array
             .filter(value => value !== this.pointed) // remove pointed itself
             .filter((value, index, array) => array.indexOf(value) === index); // remove duplicates
         },
         boxes: function() {
-            return this.indices.boxes.map(indices => indices.map(index => this.cells[index]));
+            return this.slice(this.indices.box.map(index => this.cells[index]), 9);
         },
         cells: function() {
             /* manage each number cell by the object: {
@@ -67,10 +71,11 @@ const rootVm = new Vue({
         indices: (() => {
             const colNr = index => index % 9;
             const boxNr = index => 3 * ~~(index / 27) + ~~((index % 9) / 3);
-            const rows = Array.from({length: 81, }).map((_, index) => index);
-            const cols = Array.from(rows).sort((a, b) => colNr(a) - colNr(b));
-            const boxes = Array.from(rows).sort((a, b) => boxNr(a) - boxNr(b));
-            return function() { return { rows: this.slice(rows, 9), cols: this.slice(cols, 9), boxes: this.slice(boxes, 9), }; };
+            const row = Array.from({length: 81, }).map((_, index) => index);
+            const col = Array.from(row).sort((a, b) => colNr(a) - colNr(b));
+            const box = Array.from(row).sort((a, b) => boxNr(a) - boxNr(b));
+            const indices = { row: row, col: col, box: box, };
+            return () => indices;
         })(),
         pointedCell: function() { return this.cells[this.pointed]; },
     },
