@@ -68,8 +68,15 @@ const rootVm = new Vue({
             const initial = Array.from(
                 '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
             ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9).fill(true), }));
-            const commands = this.history.commands.slice(0, this.history.current);
-            return commands.reduce((a, b) => a, initial);
+            const commands = this.history.commands.slice(0, this.history.current + 1);
+            return commands.reduce((board, command) => {
+                switch(command.type) {
+                case 'place':
+                    board[command.where].value = command.value;
+                    break;
+                }
+                return board;
+            }, initial);
         },
         pointedCell: function() { return this.cells[this.pointed]; },
     },
@@ -94,7 +101,11 @@ const rootVm = new Vue({
             };
         })(),
         place: function(number) {
-            (this.pointedCell || {value: undefined}).value = number;
+            if (this.pointed !== -1) {
+                const history = this.history;
+                history.commands.push({type: 'place', value: number, where: this.pointed, when: new Date(), });
+                history.current += 1;
+            }
         },
     },
 });
