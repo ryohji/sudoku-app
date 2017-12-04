@@ -38,7 +38,7 @@ const rootVm = new Vue({
     computed: {
         affected: function() {
             const pointed = this.cells.indexOf(this.pointed);
-            return pointed === -1 ? [] : this.affectedIndices(pointed).filter(index => index !== pointed).map(index => this.cells[index]);
+            return pointed === -1 ? [] : this.affectedIndices(pointed).map(index => this.cells[index]);
         },
         boxes: function() {
             const OFFSETS = [0, 3, 6, 27, 30, 33, 54, 57, 60,];
@@ -84,6 +84,7 @@ const rootVm = new Vue({
                 [0, 1, 2, 9, 10, 11, 18, 19, 20].map(v => v + boxOffset),
             ]
             .reduce((a, b) => a.concat(b)) // flatten array
+            .filter(value => value !== index) // remove pointed itself
             .filter((value, index, array) => array.indexOf(value) === index); // remove duplicates
         },
     },
