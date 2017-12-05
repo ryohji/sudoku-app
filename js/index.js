@@ -103,12 +103,13 @@ const rootVm = new Vue({
         onKey: function(event) {
             const match = /^Digit(.)$/.exec(event.code);
             if (match && this.pointed !== -1) {
+                const value = Number(match[1]);
                 if (event.altKey) {
                     const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.push({type: type, value: match[1], where: this.pointed, when: new Date(), });
+                    this.history.commands.push({type: type, value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 } else if (!this.pointedCell.given) {
-                    this.history.commands.push({type: 'place', value: match[1], where: this.pointed, when: new Date(), });
+                    this.history.commands.push({type: 'place', value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 }
             } else if (event.code === 'Backspace' && !this.pointedCell.given) {
