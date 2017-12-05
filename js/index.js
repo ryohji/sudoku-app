@@ -8,10 +8,10 @@ const rootVm = new Vue({
     @click="flush"
     @mouseenter="event => event.target.focus()"
     >
-        <div class="box-row" v-for="span in [[0, 3], [3, 6], [6, 9]]">
-            <div class="box" v-for="values in boxes.slice(span[0], span[1])">
-                <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
-                    <span v-for="cell in values.slice(span[0], span[1])"
+        <div class="box-row" v-for="boxRow in slice(boxes, 3)">
+            <div class="box" v-for="box in boxRow">
+                <div class="row-in-box" v-for="rowInBox in slice(box, 3)">
+                    <span v-for="cell in rowInBox"
                     :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
                     @mouseenter="pointed = cells.indexOf(cell)"
                     >
