@@ -71,18 +71,11 @@ const rootVm = new Vue({
         },
         missPlacedIndices: function() {
             const unique = (value, index, array) => array.indexOf(value) === index;
-            const not = f => function() { return !f.apply(null, arguments); };
-            const tupples = [this.indices.row, this.indices.col, this.indices.box]
-            .reduce((a, b) => a.concat(b))
-            .map(index => new Object({index: index, value: this.cells[index].value, }));
-
-            return this.slice(tupples, 9)
-            .map(array => {
-                const dups = array.map(object => object.value).filter(Boolean).filter(not(unique));
-                return array.filter(object => dups.includes(object.value)).map(object => object.index);
-            })
-            .reduce((a, b) => a.concat(b))
-            .filter(unique);
+            const indices = [this.indices.row, this.indices.col, this.indices.box].reduce((a, b) => a.concat(b));
+            const dupOrNot = this.slice(indices.map(index => this.cells[index].value), 9) // for each 9...
+            .map(vs => vs.map((v, i, self) => v && self.slice(0, i).concat(self.slice(i+1)).some(x => x === v))) // flag non-zero and duplicates
+            .reduce((a, b) => a.concat(b));
+            return dupOrNot.map((v, i) => v ? indices[i] : NaN).filter(v => v !== NaN).filter(unique);
         },
         indices: (() => {
             const colNr = index => index % 9;
