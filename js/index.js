@@ -12,7 +12,7 @@ const rootVm = new Vue({
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])"
-                    :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), }"
+                    :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
                     @mouseenter="pointed = cells.indexOf(cell)"
                     >
                         <span v-if="cell.given" class="given">{{ cell.value }}</span>
@@ -68,6 +68,21 @@ const rootVm = new Vue({
                 }
                 return board;
             }, initial);
+        },
+        missPlacedIndices: function() {
+            const unique = (value, index, array) => array.indexOf(value) === index;
+            const not = f => function() { return !f.apply(null, arguments); };
+            const tupples = [this.indices.row, this.indices.col, this.indices.box]
+            .reduce((a, b) => a.concat(b))
+            .map(index => new Object({index: index, value: this.cells[index].value, }));
+
+            return this.slice(tupples, 9)
+            .map(array => {
+                const dups = array.map(object => object.value).filter(Boolean).filter(not(unique));
+                return array.filter(object => dups.includes(object.value)).map(object => object.index);
+            })
+            .reduce((a, b) => a.concat(b))
+            .filter(unique);
         },
         indices: (() => {
             const colNr = index => index % 9;
