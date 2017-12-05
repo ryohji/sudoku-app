@@ -41,6 +41,10 @@
     background-color: skyblue;
 }
 
+.cell.error {
+    background-color: orange;
+}
+
 .cell .given {
     font-family: 'Droid Sans', sans-serif;
 }

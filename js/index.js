@@ -12,7 +12,7 @@ const rootVm = new Vue({
             <div class="box" v-for="values in boxes.slice(span[0], span[1])">
                 <div class="row-in-box" v-for="span in [[0, 3], [3, 6], [6, 9]]">
                     <span v-for="cell in values.slice(span[0], span[1])"
-                    :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), }"
+                    :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
                     @mouseenter="pointed = cells.indexOf(cell)"
                     >
                         <span v-if="cell.given" class="given">{{ cell.value }}</span>
@@ -69,6 +69,14 @@ const rootVm = new Vue({
                 return board;
             }, initial);
         },
+        missPlacedIndices: function() {
+            const unique = (value, index, array) => array.indexOf(value) === index;
+            const indices = [this.indices.row, this.indices.col, this.indices.box].reduce((a, b) => a.concat(b));
+            const dupOrNot = this.slice(indices.map(index => this.cells[index].value), 9) // for each 9...
+            .map(vs => vs.map((v, i, self) => v && self.slice(0, i).concat(self.slice(i+1)).some(x => x === v))) // flag non-zero and duplicates
+            .reduce((a, b) => a.concat(b));
+            return dupOrNot.map((v, i) => v ? indices[i] : NaN).filter(v => v !== NaN).filter(unique);
+        },
         indices: (() => {
             const colNr = index => index % 9;
             const boxNr = index => 3 * ~~(index / 27) + ~~((index % 9) / 3);
@@ -103,12 +111,13 @@ const rootVm = new Vue({
         onKey: function(event) {
             const match = /^Digit(.)$/.exec(event.code);
             if (match && this.pointed !== -1) {
+                const value = Number(match[1]);
                 if (event.altKey) {
                     const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.push({type: type, value: match[1], where: this.pointed, when: new Date(), });
+                    this.history.commands.push({type: type, value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 } else if (!this.pointedCell.given) {
-                    this.history.commands.push({type: 'place', value: match[1], where: this.pointed, when: new Date(), });
+                    this.history.commands.push({type: 'place', value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 }
             } else if (event.code === 'Backspace' && !this.pointedCell.given) {
