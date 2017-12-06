@@ -26,12 +26,20 @@ const rootVm = new Vue({
             </div>
         </div>
     </div>
-    <div class="history">
-        <div class="command" v-for="command in Array.from(history.commands).reverse()">{{
-            '(' + (~~(command.where / 9) + 1) + ',' + (command.where % 9) + ') ' + command.type + ' ' + command.value
-        }}</div>
-    </div>
+    <command-history :commands="history.commands" />
     </div>`,
+    components: {
+        'command-history': {
+            props: { commands: Array, },
+            template: `
+            <div class="history">
+                <div class="command" v-for="command in Array.from(commands).reverse()">{{
+                    '(' + (~~(command.where / 9) + 1) + ',' + (command.where % 9) + ') ' + command.type + ' ' + command.value
+                }}</div>
+            </div>
+            `,
+        }
+    },
     computed: {
         affectedIndices: function() {
             const get = array => {
