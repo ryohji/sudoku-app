@@ -29,12 +29,13 @@ const rootVm = new Vue({
     <div class="history">
         <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current + 1"
         v-for="(command, index) in Array.from(history.commands).reverse()" />
+        <div :class="{event: 1, active: history.current === -1, }">initial</div>
     </div>
     </div>`,
     components: {
         'historical-event': {
             props: { event: Object, active: Boolean, },
-            template: '<div :class="{ event: 1, active: active, }">{{ place + " " + event.type + " " + event.value }}</div>',
+            template: '<div :class="{event: 1, active: active, }">{{ place + " " + event.type + " " + event.value }}</div>',
             computed: {
                 place: function() {
                     const where = this.event.where;
