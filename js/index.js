@@ -27,16 +27,16 @@ const rootVm = new Vue({
         </div>
     </div>
     <div class="history">
-        <command-object :data="command" :key="index" v-for="(command, index) in Array.from(history.commands).reverse()" />
+        <historical-event :event="command" :key="index" v-for="(command, index) in Array.from(history.commands).reverse()" />
     </div>
     </div>`,
     components: {
-        'command-object': {
-            props: { data: Object, },
-            template: '<div class="command">{{ place + " " + data.type + " " + data.value }}</div>',
+        'historical-event': {
+            props: { event: Object, },
+            template: '<div class="event">{{ place + " " + event.type + " " + event.value }}</div>',
             computed: {
                 place: function() {
-                    const where = this.data.where;
+                    const where = this.event.where;
                     return '(' + (~~(where / 9) + 1) + ',' + (where % 9 + 1) + ')';
                 },
             },

@@ -88,6 +88,6 @@
     border-bottom: 1px solid var(--color-line-main);
 }
 
-.history > .command {
+.history > .event {
     padding: 2pt 4pt;
 }
