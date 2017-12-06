@@ -129,25 +129,24 @@ const rootVm = new Vue({
             };
         })(),
         onKey: function(event) {
-            const undo = event.code === 'KeyZ' && event.altKey && !event.shiftKey;
-            const redo = (event.code === 'KeyZ' && event.altKey && event.shiftKey) || (event.code === 'KeyY' && event.altKey && !event.shiftKey);
+            const ALT = event.altKey && !event.shiftKey;
+            const ALT_SHIFT = event.altKey && event.shiftKey;
             const match = /^Digit(.)$/.exec(event.code);
-            if (match && this.pointed !== -1) {
-                const value = Number(match[1]);
+            const NUMBER = (match && Number(match[1])) || (event.code === 'Backspace' && 0); // 0 .. 9, or false
+            const UNDO = event.code === 'KeyZ' && ALT;
+            const REDO = (event.code === 'KeyZ' && ALT_SHIFT) || (event.code === 'KeyY' && ALT);
+            if (NUMBER !== false && this.pointed !== -1) {
                 if (event.altKey) {
                     const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.splice(this.history.current, Infinity, {type: type, value: value, where: this.pointed, when: new Date(), });
+                    this.history.commands.splice(this.history.current, Infinity, {type: type, value: NUMBER, where: this.pointed, when: new Date(), });
                     this.history.current = this.history.commands.length;
                 } else if (!this.pointedCell.given) {
-                    this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: value, where: this.pointed, when: new Date(), });
+                    this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: NUMBER, where: this.pointed, when: new Date(), });
                     this.history.current = this.history.commands.length;
                 }
-            } else if (event.code === 'Backspace' && !this.pointedCell.given) {
-                this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: 0, where: this.pointed, when: new Date(), });
-                this.history.current = this.history.commands.length;
-            } else if (undo && this.history.current !== 0) {
+            } else if (UNDO && this.history.current !== 0) {
                 this.history.current -= 1;
-            } else if (redo && this.history.current != this.history.commands.length) {
+            } else if (REDO && this.history.current != this.history.commands.length) {
                 this.history.current += 1;
             }
         },
