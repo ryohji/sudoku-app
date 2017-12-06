@@ -88,6 +88,10 @@
     border-bottom: 1px solid var(--color-line-main);
 }
 
-.history > .event {
+.history .event {
     padding: 2pt 4pt;
+}
+
+.history .event.active {
+    background-color: var(--color-main);
 }
