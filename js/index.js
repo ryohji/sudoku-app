@@ -135,13 +135,16 @@ const rootVm = new Vue({
                 const value = Number(match[1]);
                 if (event.altKey) {
                     const type = event.shiftKey ? 'unmark' : 'remark';
+                    this.history.commands.splice(this.history.current + 1, Infinity);
                     this.history.commands.push({type: type, value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 } else if (!this.pointedCell.given) {
+                    this.history.commands.splice(this.history.current + 1, Infinity);
                     this.history.commands.push({type: 'place', value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 }
             } else if (event.code === 'Backspace' && !this.pointedCell.given) {
+                this.history.commands.splice(this.history.current + 1, Infinity);
                 this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
                 this.history.current += 1;
             } else if (undo && this.history.current !== -1) {
@@ -152,6 +155,7 @@ const rootVm = new Vue({
         },
         flush: function() {
             const history = this.history;
+            history.commands.splice(this.history.current + 1, Infinity);
             history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
             history.current += 1;
         },
