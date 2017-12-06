@@ -83,10 +83,8 @@ const rootVm = new Vue({
                     target.value = command.value;
                     break;
                 case 'remark':
-                    target.memo[command.value - 1] = true;
-                    break;
                 case 'unmark':
-                    target.memo[command.value - 1] = false;
+                    target.memo[command.value - 1] = command.type[0] === 'r';
                     break;
                 case 'flush':
                     command.where.forEach(index => board[index].memo[command.value - 1] = false);
