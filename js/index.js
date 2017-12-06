@@ -26,17 +26,17 @@ const rootVm = new Vue({
             </div>
         </div>
     </div>
-    <command-history :commands="history.commands" />
+    <div class="history">
+        <command-object :data="command" :key="index" v-for="(command, index) in Array.from(history.commands).reverse()" />
+    </div>
     </div>`,
     components: {
-        'command-history': {
-            props: { commands: Array, },
+        'command-object': {
+            props: { data: Object, },
             template: `
-            <div class="history">
-                <div class="command" v-for="command in Array.from(commands).reverse()">{{
-                    '(' + (~~(command.where / 9) + 1) + ',' + (command.where % 9) + ') ' + command.type + ' ' + command.value
-                }}</div>
-            </div>
+            <div class="command">{{
+                '(' + (~~(data.where / 9) + 1) + ',' + (data.where % 9) + ') ' + data.type + ' ' + data.value
+            }}</div>
             `,
         }
     },
