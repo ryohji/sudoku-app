@@ -70,3 +70,24 @@
     width: 9pt;
     height: 9pt;
 }
+
+.history {
+    display: inline-block;
+    vertical-align: top;
+    overflow: auto;
+    height: 100%;
+    margin-left: 6pt;
+}
+
+.history::before {
+    display: inline-block;
+    content: 'HISTORY';
+    padding: 0 6pt;
+    font-size: 11pt;
+    line-height: 15pt;
+    border-bottom: 1px solid var(--color-line-main);
+}
+
+.history > .command {
+    padding: 2pt 4pt;
+}

@@ -1,6 +1,7 @@
 const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
+    <div>
     <div class="boxes"
     tabindex="0"
     @keydown="onKey"
@@ -24,6 +25,12 @@ const rootVm = new Vue({
                 </div>
             </div>
         </div>
+    </div>
+    <div class="history">
+        <div class="command" v-for="command in Array.from(history.commands).reverse()">{{
+            '(' + (~~(command.where / 9) + 1) + ',' + (command.where % 9) + ') ' + command.type + ' ' + command.value
+        }}</div>
+    </div>
     </div>`,
     computed: {
         affectedIndices: function() {
