@@ -1,6 +1,7 @@
 const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
+    <div>
     <div class="boxes"
     tabindex="0"
     @keydown="onKey"
@@ -24,7 +25,31 @@ const rootVm = new Vue({
                 </div>
             </div>
         </div>
+    </div>
+    <div class="history">
+        <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
+        v-for="(command, index) in Array.from(history.commands).reverse()" />
+        <div :class="{event: 1, active: history.current === 0, }">initial</div>
+    </div>
     </div>`,
+    components: {
+        'historical-event': {
+            props: { event: Object, active: Boolean, },
+            template: '<div :class="{event: 1, active: active, }">{{ where + " " + what }}</div>',
+            computed: {
+                where: function() {
+                    const where = this.event.where;
+                    return '(' + (~~(where / 9) + 1) + ',' + (where % 9 + 1) + ')';
+                },
+                what: function() {
+                    switch(this.event.type) {
+                    case 'erase': return 'erase';
+                    default: return this.event.type + ' ' + this.event.value;
+                    }
+                },
+            },
+        }
+    },
     computed: {
         affectedIndices: function() {
             const get = array => {
@@ -49,18 +74,17 @@ const rootVm = new Vue({
             const initial = Array.from(
                 '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
             ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9), }));
-            const commands = this.history.commands.slice(0, this.history.current + 1);
+            const commands = this.history.commands.slice(0, this.history.current);
             return commands.reduce((board, command) => {
                 const target = board[command.where];
                 switch(command.type) {
                 case 'place':
+                case 'erase':
                     target.value = command.value;
                     break;
                 case 'remark':
-                    target.memo[command.value - 1] = true;
-                    break;
                 case 'unmark':
-                    target.memo[command.value - 1] = false;
+                    target.memo[command.value - 1] = command.type[0] === 'r';
                     break;
                 case 'flush':
                     command.where.forEach(index => board[index].memo[command.value - 1] = false);
@@ -90,8 +114,9 @@ const rootVm = new Vue({
     },
     data: () => new Object({
         pointed: -1,
-        /* user operations. this backs undo/redo up */
-        history: {commands: [], current: -1, },
+        /* user operations. this backs undo/redo up.
+        `current` points `commands` array index where new command to be inserted into. */
+        history: {commands: [], current: 0, },
     }),
     methods: {
         slice: (() => {
@@ -109,26 +134,38 @@ const rootVm = new Vue({
             };
         })(),
         onKey: function(event) {
-            const match = /^Digit(.)$/.exec(event.code);
-            if (match && this.pointed !== -1) {
-                const value = Number(match[1]);
-                if (event.altKey) {
-                    const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.push({type: type, value: value, where: this.pointed, when: new Date(), });
-                    this.history.current += 1;
-                } else if (!this.pointedCell.given) {
-                    this.history.commands.push({type: 'place', value: value, where: this.pointed, when: new Date(), });
-                    this.history.current += 1;
-                }
-            } else if (event.code === 'Backspace' && !this.pointedCell.given) {
-                this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
+            const ALT = event.altKey;
+            const SHIFT = event.shiftKey;
+            const NUMBER = Number((/^Digit([1-9])$/.exec(event.code) || [])[1]);
+            const UNDO = event.code === 'KeyZ' && ALT && !SHIFT;
+            const REDO = (event.code === 'KeyZ' && ALT && SHIFT) || (event.code === 'KeyY' && ALT && !SHIFT);
+            if (ALT && NUMBER && this.pointed !== -1) {
+                this.mark(NUMBER, !SHIFT);
+            } else if (!ALT && NUMBER && !this.pointedCell.given) {
+                this.place(NUMBER);
+            } else if (['Digit0', 'Backspace'].includes(event.code) && !this.pointedCell.given) {
+                this.erase();
+            } else if (UNDO && this.history.current !== 0) {
+                this.history.current -= 1;
+            } else if (REDO && this.history.current != this.history.commands.length) {
                 this.history.current += 1;
             }
         },
+        place: function(number) {
+            this.push({value: number, where: this.pointed, type: 'place', });
+        },
+        erase: function() {
+            this.push({value: 0, where: this.pointed, type: 'erase', });
+        },
+        mark: function(number, mark) {
+            this.push({value: number, where: this.pointed, type: mark ? 'remark' : 'unmark', });
+        },
         flush: function() {
-            const history = this.history;
-            history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
-            history.current += 1;
+            this.push({value: this.pointedCell.value, where: this.affectedIndices, type: 'flush', });
+        },
+        push: function(command) {
+            this.history.commands.splice(this.history.current, Infinity, Object.assign({when: new Date(), }, command));
+            this.history.current = this.history.commands.length;
         },
     },
 });
