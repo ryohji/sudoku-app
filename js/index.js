@@ -35,11 +35,17 @@ const rootVm = new Vue({
     components: {
         'historical-event': {
             props: { event: Object, active: Boolean, },
-            template: '<div :class="{event: 1, active: active, }">{{ place + " " + event.type + " " + event.value }}</div>',
+            template: '<div :class="{event: 1, active: active, }">{{ where + " " + what }}</div>',
             computed: {
-                place: function() {
+                where: function() {
                     const where = this.event.where;
                     return '(' + (~~(where / 9) + 1) + ',' + (where % 9 + 1) + ')';
+                },
+                what: function() {
+                    switch(this.event.type) {
+                    case 'erase': return 'erase';
+                    default: return this.event.type + ' ' + this.event.value;
+                    }
                 },
             },
         }
@@ -73,6 +79,7 @@ const rootVm = new Vue({
                 const target = board[command.where];
                 switch(command.type) {
                 case 'place':
+                case 'erase':
                     target.value = command.value;
                     break;
                 case 'remark':
@@ -139,7 +146,7 @@ const rootVm = new Vue({
             } else if (!ALT && NUMBER && !this.pointedCell.given) {
                 this.place(NUMBER);
             } else if (['Digit0', 'Backspace'].includes(event.code) && !this.pointedCell.given) {
-                this.place(0);
+                this.erase();
             } else if (UNDO && this.history.current !== 0) {
                 this.history.current -= 1;
             } else if (REDO && this.history.current != this.history.commands.length) {
@@ -148,6 +155,9 @@ const rootVm = new Vue({
         },
         place: function(number) {
             this.push({value: number, where: this.pointed, type: 'place', });
+        },
+        erase: function() {
+            this.push({value: 0, where: this.pointed, type: 'erase', });
         },
         mark: function(number, mark) {
             this.push({value: number, where: this.pointed, type: mark ? 'remark' : 'unmark', });
