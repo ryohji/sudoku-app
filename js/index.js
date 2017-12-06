@@ -131,13 +131,13 @@ const rootVm = new Vue({
         onKey: function(event) {
             const ALT = event.altKey;
             const SHIFT = event.shiftKey;
-            const match = /^Digit(.)$/.exec(event.code);
-            const NUMBER = (match && Number(match[1])) || (event.code === 'Backspace' && 0); // 0 .. 9, or false
+            const match = (/^Digit(.)$/.exec(event.code) || [])[1] || (event.code === 'Backspace' && '0');
+            const NUMBER = match ? Number(match) : undefined;
             const UNDO = event.code === 'KeyZ' && ALT && !SHIFT;
             const REDO = (event.code === 'KeyZ' && ALT && SHIFT) || (event.code === 'KeyY' && ALT && !SHIFT);
             if (ALT && [1,2,3,4,5,6,7,8,9].includes(NUMBER) && this.pointed !== -1) {
                 this.mark(NUMBER, !SHIFT);
-            } else if (!ALT && NUMBER !== false && !this.pointedCell.given) {
+            } else if (!ALT && NUMBER !== undefined && !this.pointedCell.given) {
                 this.place(NUMBER);
             } else if (UNDO && this.history.current !== 0) {
                 this.history.current -= 1;
