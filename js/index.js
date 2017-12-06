@@ -33,11 +33,13 @@ const rootVm = new Vue({
     components: {
         'command-object': {
             props: { data: Object, },
-            template: `
-            <div class="command">{{
-                '(' + (~~(data.where / 9) + 1) + ',' + (data.where % 9) + ') ' + data.type + ' ' + data.value
-            }}</div>
-            `,
+            template: '<div class="command">{{ place + " " + data.type + " " + data.value }}</div>',
+            computed: {
+                place: function() {
+                    const where = this.data.where;
+                    return '(' + (~~(where / 9) + 1) + ',' + (where % 9 + 1) + ')';
+                },
+            },
         }
     },
     computed: {
