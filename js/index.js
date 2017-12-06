@@ -128,6 +128,8 @@ const rootVm = new Vue({
             };
         })(),
         onKey: function(event) {
+            const undo = event.code === 'KeyZ' && event.altKey && !event.shiftKey;
+            const redo = (event.code === 'KeyZ' && event.altKey && event.shiftKey) || (event.code === 'KeyY' && event.altKey && !event.shiftKey);
             const match = /^Digit(.)$/.exec(event.code);
             if (match && this.pointed !== -1) {
                 const value = Number(match[1]);
@@ -141,6 +143,10 @@ const rootVm = new Vue({
                 }
             } else if (event.code === 'Backspace' && !this.pointedCell.given) {
                 this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
+                this.history.current += 1;
+            } else if (undo && this.history.current !== -1) {
+                this.history.current -= 1;
+            } else if (redo && this.history.current != this.history.commands.length - 1) {
                 this.history.current += 1;
             }
         },
