@@ -129,26 +129,30 @@ const rootVm = new Vue({
             };
         })(),
         onKey: function(event) {
-            const ALT = event.altKey && !event.shiftKey;
-            const ALT_SHIFT = event.altKey && event.shiftKey;
+            const ALT = event.altKey;
+            const SHIFT = event.shiftKey;
             const match = /^Digit(.)$/.exec(event.code);
             const NUMBER = (match && Number(match[1])) || (event.code === 'Backspace' && 0); // 0 .. 9, or false
-            const UNDO = event.code === 'KeyZ' && ALT;
-            const REDO = (event.code === 'KeyZ' && ALT_SHIFT) || (event.code === 'KeyY' && ALT);
-            if (NUMBER !== false && this.pointed !== -1) {
-                if (event.altKey) {
-                    const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.splice(this.history.current, Infinity, {type: type, value: NUMBER, where: this.pointed, when: new Date(), });
-                    this.history.current = this.history.commands.length;
-                } else if (!this.pointedCell.given) {
-                    this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: NUMBER, where: this.pointed, when: new Date(), });
-                    this.history.current = this.history.commands.length;
-                }
+            const UNDO = event.code === 'KeyZ' && ALT && !SHIFT;
+            const REDO = (event.code === 'KeyZ' && ALT && SHIFT) || (event.code === 'KeyY' && ALT && !SHIFT);
+            if (ALT && [1,2,3,4,5,6,7,8,9].includes(NUMBER) && this.pointed !== -1) {
+                this.mark(NUMBER, !SHIFT);
+            } else if (!ALT && NUMBER !== false && !this.pointedCell.given) {
+                this.place(NUMBER);
             } else if (UNDO && this.history.current !== 0) {
                 this.history.current -= 1;
             } else if (REDO && this.history.current != this.history.commands.length) {
                 this.history.current += 1;
             }
+        },
+        place: function(number) {
+            this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: number, where: this.pointed, when: new Date(), });
+            this.history.current = this.history.commands.length;
+        },
+        mark: function(number, mark) {
+            const type = mark ? 'remark' : 'unmark';
+            this.history.commands.splice(this.history.current, Infinity, {type: type, value: number, where: this.pointed, when: new Date(), });
+            this.history.current = this.history.commands.length;
         },
         flush: function() {
             this.history.commands.splice(this.history.current, Infinity, {type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
