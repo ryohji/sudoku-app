@@ -27,9 +27,9 @@ const rootVm = new Vue({
         </div>
     </div>
     <div class="history">
-        <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current + 1"
+        <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
         v-for="(command, index) in Array.from(history.commands).reverse()" />
-        <div :class="{event: 1, active: history.current === -1, }">initial</div>
+        <div :class="{event: 1, active: history.current === 0, }">initial</div>
     </div>
     </div>`,
     components: {
@@ -68,7 +68,7 @@ const rootVm = new Vue({
             const initial = Array.from(
                 '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
             ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9), }));
-            const commands = this.history.commands.slice(0, this.history.current + 1);
+            const commands = this.history.commands.slice(0, this.history.current);
             return commands.reduce((board, command) => {
                 const target = board[command.where];
                 switch(command.type) {
@@ -109,8 +109,9 @@ const rootVm = new Vue({
     },
     data: () => new Object({
         pointed: -1,
-        /* user operations. this backs undo/redo up */
-        history: {commands: [], current: -1, },
+        /* user operations. this backs undo/redo up.
+        `current` points `commands` array index where new command to be inserted into. */
+        history: {commands: [], current: 0, },
     }),
     methods: {
         slice: (() => {
@@ -135,27 +136,27 @@ const rootVm = new Vue({
                 const value = Number(match[1]);
                 if (event.altKey) {
                     const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.splice(this.history.current + 1, Infinity);
+                    this.history.commands.splice(this.history.current, Infinity);
                     this.history.commands.push({type: type, value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 } else if (!this.pointedCell.given) {
-                    this.history.commands.splice(this.history.current + 1, Infinity);
+                    this.history.commands.splice(this.history.current, Infinity);
                     this.history.commands.push({type: 'place', value: value, where: this.pointed, when: new Date(), });
                     this.history.current += 1;
                 }
             } else if (event.code === 'Backspace' && !this.pointedCell.given) {
-                this.history.commands.splice(this.history.current + 1, Infinity);
+                this.history.commands.splice(this.history.current, Infinity);
                 this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
                 this.history.current += 1;
-            } else if (undo && this.history.current !== -1) {
+            } else if (undo && this.history.current !== 0) {
                 this.history.current -= 1;
-            } else if (redo && this.history.current != this.history.commands.length - 1) {
+            } else if (redo && this.history.current != this.history.commands.length) {
                 this.history.current += 1;
             }
         },
         flush: function() {
             const history = this.history;
-            history.commands.splice(this.history.current + 1, Infinity);
+            history.commands.splice(this.history.current, Infinity);
             history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
             history.current += 1;
         },
