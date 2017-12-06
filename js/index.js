@@ -136,18 +136,15 @@ const rootVm = new Vue({
                 const value = Number(match[1]);
                 if (event.altKey) {
                     const type = event.shiftKey ? 'unmark' : 'remark';
-                    this.history.commands.splice(this.history.current, Infinity);
-                    this.history.commands.push({type: type, value: value, where: this.pointed, when: new Date(), });
-                    this.history.current += 1;
+                    this.history.commands.splice(this.history.current, Infinity, {type: type, value: value, where: this.pointed, when: new Date(), });
+                    this.history.current = this.history.commands.length;
                 } else if (!this.pointedCell.given) {
-                    this.history.commands.splice(this.history.current, Infinity);
-                    this.history.commands.push({type: 'place', value: value, where: this.pointed, when: new Date(), });
-                    this.history.current += 1;
+                    this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: value, where: this.pointed, when: new Date(), });
+                    this.history.current = this.history.commands.length;
                 }
             } else if (event.code === 'Backspace' && !this.pointedCell.given) {
-                this.history.commands.splice(this.history.current, Infinity);
-                this.history.commands.push({type: 'place', value: 0, where: this.pointed, when: new Date(), });
-                this.history.current += 1;
+                this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: 0, where: this.pointed, when: new Date(), });
+                this.history.current = this.history.commands.length;
             } else if (undo && this.history.current !== 0) {
                 this.history.current -= 1;
             } else if (redo && this.history.current != this.history.commands.length) {
@@ -155,10 +152,8 @@ const rootVm = new Vue({
             }
         },
         flush: function() {
-            const history = this.history;
-            history.commands.splice(this.history.current, Infinity);
-            history.commands.push({type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
-            history.current += 1;
+            this.history.commands.splice(this.history.current, Infinity, {type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
+            this.history.current = this.history.commands.length;
         },
     },
 });
