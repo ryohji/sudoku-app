@@ -146,16 +146,16 @@ const rootVm = new Vue({
             }
         },
         place: function(number) {
-            this.history.commands.splice(this.history.current, Infinity, {type: 'place', value: number, where: this.pointed, when: new Date(), });
-            this.history.current = this.history.commands.length;
+            this.push({value: number, where: this.pointed, type: 'place', });
         },
         mark: function(number, mark) {
-            const type = mark ? 'remark' : 'unmark';
-            this.history.commands.splice(this.history.current, Infinity, {type: type, value: number, where: this.pointed, when: new Date(), });
-            this.history.current = this.history.commands.length;
+            this.push({value: number, where: this.pointed, type: mark ? 'remark' : 'unmark', });
         },
         flush: function() {
-            this.history.commands.splice(this.history.current, Infinity, {type: 'flush', value: this.pointedCell.value, where: this.affectedIndices, when: new Date(), });
+            this.push({value: this.pointedCell.value, where: this.affectedIndices, type: 'flush', });
+        },
+        push: function(command) {
+            this.history.commands.splice(this.history.current, Infinity, Object.assign({when: new Date(), }, command));
             this.history.current = this.history.commands.length;
         },
     },
