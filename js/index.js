@@ -77,7 +77,7 @@ const rootVm = new Vue({
                     target.memo[command.value - 1] = command.type[0] === 'r';
                     break;
                 case 'flush':
-                    command.where.forEach(index => board[index].memo[command.value - 1] = false);
+                    this.affectedIndicesBy(command.where).forEach(index => board[index].memo[command.value - 1] = false);
                     break;
                 }
                 return board;
@@ -162,7 +162,7 @@ const rootVm = new Vue({
             this.push({value: number, where: this.pointed, type: mark ? 'remark' : 'unmark', });
         },
         flush: function() {
-            this.push({value: this.pointedCell.value, where: this.affectedIndices, type: 'flush', });
+            this.push({value: this.pointedCell.value, where: this.pointed, type: 'flush', });
         },
         push: function(command) {
             this.history.commands.splice(this.history.current, Infinity, Object.assign({when: new Date(), }, command));
