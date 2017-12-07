@@ -165,9 +165,8 @@ const rootVm = new Vue({
             this.push({value: this.pointedCell.value, type: 'flush', });
         },
         push: function(command) {
-            const history = this.history, commands = this.history.commands;
-            commands.splice(history.current, Infinity, Object.assign({when: new Date(), where: this.pointed, }, command));
-            history.current += 1;
+            this.history.commands.splice(this.history.current ++, Infinity,
+                Object.assign({when: new Date(), where: this.pointed, }, command));
         },
     },
 });
