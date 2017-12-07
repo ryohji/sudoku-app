@@ -153,20 +153,21 @@ const rootVm = new Vue({
             }
         },
         place: function(number) {
-            this.push({value: number, where: this.pointed, type: 'place', });
+            this.push({value: number, type: 'place', });
         },
         erase: function() {
-            this.push({value: 0, where: this.pointed, type: 'erase', });
+            this.push({value: 0, type: 'erase', });
         },
         mark: function(number, mark) {
-            this.push({value: number, where: this.pointed, type: mark ? 'remark' : 'unmark', });
+            this.push({value: number, type: mark ? 'remark' : 'unmark', });
         },
         flush: function() {
-            this.push({value: this.pointedCell.value, where: this.pointed, type: 'flush', });
+            this.push({value: this.pointedCell.value, type: 'flush', });
         },
         push: function(command) {
-            this.history.commands.splice(this.history.current, Infinity, Object.assign({when: new Date(), }, command));
-            this.history.current = this.history.commands.length;
+            const history = this.history, commands = this.history.commands;
+            commands.splice(history.current, Infinity, Object.assign({when: new Date(), where: this.pointed, }, command));
+            history.current += 1;
         },
     },
 });
