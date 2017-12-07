@@ -51,17 +51,7 @@ const rootVm = new Vue({
         }
     },
     computed: {
-        affectedIndices: function() {
-            const get = array => {
-                const index = array.findIndex(x => x === this.pointed);
-                const start = 9 * ~~(index / 9);
-                return array.slice(start, start + (index !== -1 ? 9 : 0));
-            };
-            return [get(this.indices.row), get(this.indices.col), get(this.indices.box)]
-            .reduce((a, b) => a.concat(b)) // flatten array
-            .filter(value => value !== this.pointed) // remove pointed itself
-            .filter((value, index, array) => array.indexOf(value) === index); // remove duplicates
-        },
+        affectedIndices: function() { return this.affectedIndicesBy(this.pointed); },
         boxes: function() {
             return this.slice(this.indices.box.map(index => this.cells[index]), 9);
         },
@@ -133,6 +123,17 @@ const rootVm = new Vue({
                 return reduceConcat(splitted);
             };
         })(),
+        affectedIndicesBy: function(cellIndex) {
+            const get = array => {
+                const index = array.findIndex(x => x === cellIndex);
+                const start = 9 * ~~(index / 9);
+                return array.slice(start, start + (index !== -1 ? 9 : 0));
+            };
+            return [get(this.indices.row), get(this.indices.col), get(this.indices.box)]
+            .reduce((a, b) => a.concat(b)) // flatten array
+            .filter(value => value !== cellIndex) // remove cellIndex itself
+            .filter((value, index, array) => array.indexOf(value) === index); // remove duplicates
+        },
         onKey: function(event) {
             const ALT = event.altKey;
             const SHIFT = event.shiftKey;
