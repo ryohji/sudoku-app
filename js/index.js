@@ -99,7 +99,7 @@ const rootVm = new Vue({
             const dupOrNot = this.slice(indices.map(index => this.cells[index].value), 9) // for each 9...
             .map(vs => vs.map((v, i, self) => v && self.slice(0, i).concat(self.slice(i+1)).some(x => x === v))) // flag non-zero and duplicates
             .reduce((a, b) => a.concat(b));
-            return dupOrNot.map((v, i) => v ? indices[i] : NaN).filter(v => v !== NaN).filter(unique);
+            return dupOrNot.map((v, i) => v ? indices[i] : NaN).filter(unique); // NaN will be removed by unique.
         },
         indices: (() => {
             const colNr = index => index % 9;
