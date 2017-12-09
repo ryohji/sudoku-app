@@ -109,20 +109,14 @@ const rootVm = new Vue({
         history: {commands: [], current: 0, },
     }),
     methods: {
-        chunksOf: (() => {
-            const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
-            const reduceConcat = a => a.length ? a.reduce((a, b) => [a].concat(reduceConcat(b))) : [];
-        
-            return (n, array) => {
-                const splitted = splitAt(array, n);
-                var p = splitted;
-                while (p[1].length !== 0) {
-                    p[1] = splitAt(p[1], n);
-                    p = p[1];
-                }
-                return reduceConcat(splitted);
+        chunksOf: (n, array) => {
+            const chunks = {};
+            chunks[Symbol.iterator] = () => {
+                var i = 0;
+                return { next: () => new Object({done: i >= array.length, value: array.slice(i, i += n), }), };
             };
-        })(),
+            return Array.from(chunks);
+        },
         affectedIndicesBy: function(cellIndex) {
             const get = array => {
                 const index = array.findIndex(x => x === cellIndex);
