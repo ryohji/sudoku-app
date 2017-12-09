@@ -9,16 +9,16 @@ const rootVm = new Vue({
     @click="flush"
     @mouseenter="event => event.target.focus()"
     >
-        <div class="box-row" v-for="boxRow in slice(boxes, 3)">
+        <div class="box-row" v-for="boxRow in chunksOf(3, boxes)">
             <div class="box" v-for="box in boxRow">
-                <div class="row-in-box" v-for="rowInBox in slice(box, 3)">
+                <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
                     <span v-for="cell in rowInBox"
                     :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
                     @mouseenter="pointed = cells.indexOf(cell)"
                     >
                         <span v-if="cell.given" class="given">{{ cell.value }}</span>
                         <span v-else-if="cell.value">{{ cell.value }}</span>
-                        <div  v-else class="memo" v-for="memo in slice(cell.memo.map((set, i) => set ? i + 1 : ''), 3)">
+                        <div  v-else class="memo" v-for="memo in chunksOf(3, cell.memo.map((set, i) => set ? i + 1 : ''))">
                             <span v-for="n in memo">{{ n }}</span>
                         </div>
                     </span>
@@ -53,7 +53,7 @@ const rootVm = new Vue({
     computed: {
         affectedIndices: function() { return this.affectedIndicesBy(this.pointed); },
         boxes: function() {
-            return this.slice(this.indices.box.map(index => this.cells[index]), 9);
+            return this.chunksOf(9, this.indices.box.map(index => this.cells[index]));
         },
         cells: function() {
             /* manage each number cell by the object: {
@@ -86,7 +86,7 @@ const rootVm = new Vue({
         missPlacedIndices: function() {
             const unique = (value, index, array) => array.indexOf(value) === index;
             const indices = [this.indices.row, this.indices.col, this.indices.box].reduce((a, b) => a.concat(b));
-            const dupOrNot = this.slice(indices.map(index => this.cells[index].value), 9) // for each 9...
+            const dupOrNot = this.chunksOf(9, indices.map(index => this.cells[index].value)) // for each 9...
             .map(vs => vs.map((v, i, self) => v && self.slice(0, i).concat(self.slice(i+1)).some(x => x === v))) // flag non-zero and duplicates
             .reduce((a, b) => a.concat(b));
             return dupOrNot.map((v, i) => v ? indices[i] : NaN).filter(unique); // NaN will be removed by unique.
@@ -109,11 +109,11 @@ const rootVm = new Vue({
         history: {commands: [], current: 0, },
     }),
     methods: {
-        slice: (() => {
+        chunksOf: (() => {
             const splitAt = (array, n) => [array.slice(0, n), array.slice(n)];
             const reduceConcat = a => a.length ? a.reduce((a, b) => [a].concat(reduceConcat(b))) : [];
         
-            return (array, n) => {
+            return (n, array) => {
                 const splitted = splitAt(array, n);
                 var p = splitted;
                 while (p[1].length !== 0) {
