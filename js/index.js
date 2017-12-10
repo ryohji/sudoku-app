@@ -9,16 +9,16 @@ const rootVm = new Vue({
     @click="flush"
     @mouseenter="event => event.target.focus()"
     >
-        <div class="box-row" v-for="boxRow in chunksOf(3, boxes)">
+        <div class="box-row" v-for="boxRow in chunksOf(3, chunksOf(9, indices.box))">
             <div class="box" v-for="box in boxRow">
                 <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
-                    <span v-for="cell in rowInBox"
-                    :class="{cell: 1, hover: affectedIndicesBy(pointed).includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
-                    @mouseenter="pointed = cells.indexOf(cell)"
+                    <span v-for="index in rowInBox"
+                    :class="{cell: 1, hover: affectedIndicesBy(pointed).includes(index), error: missPlacedIndices.includes(index), }"
+                    @mouseenter="pointed = index"
                     >
-                        <span v-if="cell.given" class="given">{{ cell.value }}</span>
-                        <span v-else-if="cell.value">{{ cell.value }}</span>
-                        <div  v-else class="memo" v-for="memo in chunksOf(3, cell.memo.map((set, i) => set ? i + 1 : ''))">
+                        <span v-if="cells[index].given" class="given">{{ cells[index].value }}</span>
+                        <span v-else-if="cells[index].value">{{ cells[index].value }}</span>
+                        <div  v-else class="memo" v-for="memo in chunksOf(3, cells[index].memo.map((set, i) => set ? i + 1 : ''))">
                             <span v-for="n in memo">{{ n }}</span>
                         </div>
                     </span>
@@ -51,9 +51,6 @@ const rootVm = new Vue({
         }
     },
     computed: {
-        boxes: function() {
-            return this.chunksOf(9, this.indices.box.map(index => this.cells[index]));
-        },
         cells: function() {
             /* manage each number cell by the object: {
                 {Boolean} given, -- true if the number is given for clue, otherwise false.
