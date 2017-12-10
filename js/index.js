@@ -109,14 +109,12 @@ const rootVm = new Vue({
         history: {commands: [], current: 0, },
     }),
     methods: {
-        chunksOf: (n, array) => {
-            const chunks = {};
-            chunks[Symbol.iterator] = () => {
+        chunksOf: (n, array) => Array.from({
+            [Symbol.iterator]: () => {
                 var i = 0;
                 return { next: () => new Object({done: i >= array.length, value: array.slice(i, i += n), }), };
-            };
-            return Array.from(chunks);
-        },
+            },
+        }),
         affectedIndicesBy: function(cellIndex) {
             const get = array => {
                 const index = array.findIndex(x => x === cellIndex);
