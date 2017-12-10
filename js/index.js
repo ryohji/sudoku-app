@@ -61,27 +61,24 @@ const rootVm = new Vue({
                 {Number} value, -- a number between 0 to 9.
                 {Array} memo, -- array of Boolean, each element represent the number those of which can be placed, user considers.
             } */
-            const initial = Array.from(
-                '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
-            ).map(Number).map(n => new Object({given: Boolean(n), value: n, memo: Array(9), }));
-            const commands = this.history.commands.slice(0, this.history.current);
-            return commands.reduce((board, command) => {
-                const target = board[command.where];
+            return this.history.commands.slice(0, this.history.current).reduce((cells, command) => {
                 switch(command.type) {
                 case 'place':
                 case 'erase':
-                    target.value = command.value;
+                    cells[command.where].value = command.value;
                     break;
                 case 'remark':
                 case 'unmark':
-                    target.memo[command.value - 1] = command.type[0] === 'r';
+                    cells[command.where].memo[command.value - 1] = command.type[0] === 'r';
                     break;
                 case 'flush':
-                    this.affectedIndicesBy(command.where).forEach(index => board[index].memo[command.value - 1] = false);
+                    this.affectedIndicesBy(command.where).forEach(index => cells[index].memo[command.value - 1] = false);
                     break;
                 }
-                return board;
-            }, initial);
+                return cells;
+            }, Array.from( // initial cells
+                '060003001200500600007090500000400090800000006010005000002010700004009003700200040' // 朝日新聞beパズル 2017/10/07 掲載分
+            ).map(Number).map(n => new Object({given: n !== 0, value: n, memo: Array(9), })));
         },
         missPlacedIndices: function() {
             const unique = (value, index, array) => array.indexOf(value) === index;
