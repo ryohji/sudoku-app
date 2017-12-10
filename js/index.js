@@ -13,7 +13,7 @@ const rootVm = new Vue({
             <div class="box" v-for="box in boxRow">
                 <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
                     <span v-for="cell in rowInBox"
-                    :class="{cell: 1, hover: affectedIndices.includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
+                    :class="{cell: 1, hover: affectedIndicesBy(pointed).includes(cells.indexOf(cell)), error: missPlacedIndices.includes(cells.indexOf(cell)), }"
                     @mouseenter="pointed = cells.indexOf(cell)"
                     >
                         <span v-if="cell.given" class="given">{{ cell.value }}</span>
@@ -51,7 +51,6 @@ const rootVm = new Vue({
         }
     },
     computed: {
-        affectedIndices: function() { return this.affectedIndicesBy(this.pointed); },
         boxes: function() {
             return this.chunksOf(9, this.indices.box.map(index => this.cells[index]));
         },
