@@ -14,7 +14,6 @@ const rootVm = new Vue({
                     <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
                         <number-cell class="cell" v-for="index in rowInBox" :key="index"
                         @mouseenter="pointed = index"
-                        :chunks-of="chunksOf"
                         :cell="cells[index]"
                         :affected="affectedIndicesBy(pointed).includes(index)"
                         :misplaced="missPlacedIndices.includes(index)"
@@ -31,17 +30,14 @@ const rootVm = new Vue({
     </div>`,
     components: {
         'number-cell': {
-            props: {cell: Object, chunksOf: Function, affected: Boolean, misplaced: Boolean, },
+            props: {cell: Object, affected: Boolean, misplaced: Boolean, },
             template: `
             <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, }" >
-                <span v-if="given" class="given">{{ value }}</span>
-                <span v-else-if="value">{{ value }}</span>
-                <div  v-else class="memo" v-for="chunk in chunksOf(3, memoNumbers)"><span v-for="n in chunk">{{ n }}</span></div>
+                <span v-if="cell.value !== 0" :class="{given: cell.given, }">{{ cell.value }}</span>
+                <span v-else class="memo" v-for="n in memoNumbers">{{ n }}</span>
             </span>
             `,
             computed: {
-                value: function() { return this.cell.value; },
-                given: function() { return this.cell.given; },
                 memoNumbers: function() { return this.cell.memo.map((set, i) => set ? i + 1 : ''); }
             },
         },

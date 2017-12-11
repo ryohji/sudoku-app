@@ -57,11 +57,7 @@
     font-family: 'Droid Sans', sans-serif;
 }
 
-.memo {
-    line-height: 1em;
-}
-
-.memo > span {
+span.memo {
     display: inline-block;
     text-align: center;
     vertical-align: middle;
@@ -69,6 +65,11 @@
     line-height: 9pt;
     width: 9pt;
     height: 9pt;
+}
+
+span.memo:nth-of-type(3n)::after {
+    content: '\A';
+    white-space: pre-line;
 }
 
 .history {
