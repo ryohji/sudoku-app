@@ -2,37 +2,49 @@ const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div>
-    <div class="boxes"
-    tabindex="0"
-    @keydown="onKey"
-    @keydown.space="flush"
-    @click="flush"
-    @mouseenter="event => event.target.focus()"
-    >
-        <div class="box-row" v-for="boxRow in chunksOf(3, chunksOf(9, indices.box))">
-            <div class="box" v-for="box in boxRow">
-                <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
-                    <span v-for="index in rowInBox"
-                    :class="{cell: 1, hover: affectedIndicesBy(pointed).includes(index), error: missPlacedIndices.includes(index), }"
-                    @mouseenter="pointed = index"
-                    >
-                        <span v-if="cells[index].given" class="given">{{ cells[index].value }}</span>
-                        <span v-else-if="cells[index].value">{{ cells[index].value }}</span>
-                        <div  v-else class="memo" v-for="memo in chunksOf(3, cells[index].memo.map((set, i) => set ? i + 1 : ''))">
-                            <span v-for="n in memo">{{ n }}</span>
-                        </div>
-                    </span>
+        <div class="boxes"
+        tabindex="0"
+        @keydown="onKey"
+        @keydown.space="flush"
+        @click="flush"
+        @mouseenter="event => event.target.focus()"
+        >
+            <div class="box-row" v-for="boxRow in chunksOf(3, chunksOf(9, indices.box))">
+                <div class="box" v-for="box in boxRow">
+                    <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
+                        <number-cell class="cell" v-for="index in rowInBox" :key="index"
+                        @mouseenter="pointed = index"
+                        :chunks-of="chunksOf"
+                        :cell="cells[index]"
+                        :affected="affectedIndicesBy(pointed).includes(index)"
+                        :misplaced="missPlacedIndices.includes(index)"
+                        />
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <div class="history">
-        <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
-        v-for="(command, index) in Array.from(history.commands).reverse()" />
-        <div :class="{event: 1, active: history.current === 0, }">initial</div>
-    </div>
+        <div class="history">
+            <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
+            v-for="(command, index) in Array.from(history.commands).reverse()" />
+            <div :class="{event: 1, active: history.current === 0, }">initial</div>
+        </div>
     </div>`,
     components: {
+        'number-cell': {
+            props: {cell: Object, chunksOf: Function, affected: Boolean, misplaced: Boolean, },
+            template: `
+            <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, }" >
+                <span v-if="given" class="given">{{ value }}</span>
+                <span v-else-if="value">{{ value }}</span>
+                <div  v-else class="memo" v-for="chunk in chunksOf(3, memoNumbers)"><span v-for="n in chunk">{{ n }}</span></div>
+            </span>
+            `,
+            computed: {
+                value: function() { return this.cell.value; },
+                given: function() { return this.cell.given; },
+                memoNumbers: function() { return this.cell.memo.map((set, i) => set ? i + 1 : ''); }
+            },
+        },
         'historical-event': {
             props: { event: Object, active: Boolean, },
             template: '<div :class="{event: 1, active: active, }">{{ where + " " + what }}</div>',
