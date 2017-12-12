@@ -11,33 +11,6 @@
     font-family: 'Droid Serif', serif;
 }
 
-.cell.hover {
-    background-color: var(--color-main);
-}
-
-.cell.error {
-    background-color: var(--color-error);
-}
-
-.cell .given {
-    font-family: 'Droid Sans', sans-serif;
-}
-
-span.memo {
-    display: inline-block;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 6.5pt;
-    line-height: 9pt;
-    width: 9pt;
-    height: 9pt;
-}
-
-span.memo:nth-of-type(3n)::after {
-    content: '\A';
-    white-space: pre-line;
-}
-
 .history {
     display: inline-block;
     vertical-align: top;
@@ -106,4 +79,26 @@ span.memo:nth-of-type(3n)::after {
 
 .cell:nth-of-type(-n + 9) {
     border-top-color: var(--color-line-main);
+}
+
+.cell.hover {
+    background-color: var(--color-main);
+}
+
+.cell.error {
+    background-color: var(--color-error);
+}
+
+.cell.given {
+    font-family: 'Droid Sans', sans-serif;
+}
+
+span.memo {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 6.5pt;
+    line-height: 12px;
+    width: 12px;
+    height: 12px;
 }

@@ -26,9 +26,9 @@ const rootVm = new Vue({
         'number-cell': {
             props: {cell: Object, affected: Boolean, misplaced: Boolean, },
             template: `
-            <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, }" >
-                <span v-if="cell.value !== 0" :class="{given: cell.given, }">{{ cell.value }}</span>
-                <span v-else class="memo" v-for="n in memoNumbers">{{ n }}</span>
+            <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, given: cell.given, }" >{{
+                cell.value !== 0 ? cell.value : ''
+                }}<span v-if="cell.value === 0" class="memo" v-for="n in memoNumbers">{{ n }}</span>
             </span>
             `,
             computed: {
