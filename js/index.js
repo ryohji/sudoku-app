@@ -22,6 +22,9 @@ const rootVm = new Vue({
                 </div>
             </div>
         </div>
+        <div class="sudoku">
+        <span class="new-cell" v-for="cell in cells">{{ cell.value }}</span>
+        </div>
         <div class="history">
             <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
             v-for="(command, index) in Array.from(history.commands).reverse()" />

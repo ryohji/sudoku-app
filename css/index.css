@@ -96,3 +96,48 @@ span.memo:nth-of-type(3n)::after {
 .history .event.active {
     background-color: var(--color-main);
 }
+
+.sudoku {
+    display: inline-block;
+    border-color: var(--color-line-main);
+    border-width: 0 1px 1px 0;
+    border-style: solid;
+    width: calc(9 * 37px);
+}
+
+.new-cell {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 16pt;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border-color: var(--color-line-sub);
+    border-width: 1px 0 0 1px;
+    border-style: solid;
+}
+
+.new-cell:nth-of-type(9n + 1), .new-cell:nth-of-type(9n + 4), .new-cell:nth-of-type(9n + 7) {
+    border-left-color: var(--color-line-main);
+}
+
+.new-cell:nth-of-type(-n + 63) {
+    border-top-color: var(--color-line-main);
+}
+
+.new-cell:nth-of-type(-n + 54) {
+    border-top-color: var(--color-line-sub);
+}
+
+.new-cell:nth-of-type(-n + 36) {
+    border-top-color: var(--color-line-main);
+}
+
+.new-cell:nth-of-type(-n + 27) {
+    border-top-color: var(--color-line-sub);
+}
+
+.new-cell:nth-of-type(-n + 9) {
+    border-top-color: var(--color-line-main);
+}
