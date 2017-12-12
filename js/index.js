@@ -2,25 +2,19 @@ const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div>
-        <div class="boxes"
+        <div class="sudoku"
         tabindex="0"
         @keydown="onKey"
         @keydown.space="flush"
         @click="flush"
         @mouseenter="event => event.target.focus()"
         >
-            <div class="box-row" v-for="boxRow in chunksOf(3, chunksOf(9, indices.box))">
-                <div class="box" v-for="box in boxRow">
-                    <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
-                        <number-cell class="cell" v-for="index in rowInBox" :key="index"
-                        @mouseenter="pointed = index"
-                        :cell="cells[index]"
-                        :affected="affectedIndicesBy(pointed).includes(index)"
-                        :misplaced="missPlacedIndices.includes(index)"
-                        />
-                    </div>
-                </div>
-            </div>
+            <number-cell class="cell" v-for="cell in cells" :key="cells.indexOf(cell)"
+            @mouseenter="pointed = cells.indexOf(cell)"
+            :cell="cell"
+            :affected="affectedIndicesBy(pointed).includes(cells.indexOf(cell))"
+            :misplaced="missPlacedIndices.includes(cells.indexOf(cell))"
+            />
         </div>
         <div class="history">
             <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
@@ -32,9 +26,9 @@ const rootVm = new Vue({
         'number-cell': {
             props: {cell: Object, affected: Boolean, misplaced: Boolean, },
             template: `
-            <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, }" >
-                <span v-if="cell.value !== 0" :class="{given: cell.given, }">{{ cell.value }}</span>
-                <span v-else class="memo" v-for="n in memoNumbers">{{ n }}</span>
+            <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, given: cell.given, }" >{{
+                cell.value !== 0 ? cell.value : ''
+                }}<span v-if="cell.value === 0" class="memo" v-for="n in memoNumbers">{{ n }}</span>
             </span>
             `,
             computed: {
