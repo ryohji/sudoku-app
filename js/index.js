@@ -2,28 +2,19 @@ const rootVm = new Vue({
     el: '#app-sudoku',
     template: `
     <div>
-        <div class="boxes"
+        <div class="sudoku"
         tabindex="0"
         @keydown="onKey"
         @keydown.space="flush"
         @click="flush"
         @mouseenter="event => event.target.focus()"
         >
-            <div class="box-row" v-for="boxRow in chunksOf(3, chunksOf(9, indices.box))">
-                <div class="box" v-for="box in boxRow">
-                    <div class="row-in-box" v-for="rowInBox in chunksOf(3, box)">
-                        <number-cell class="cell" v-for="index in rowInBox" :key="index"
-                        @mouseenter="pointed = index"
-                        :cell="cells[index]"
-                        :affected="affectedIndicesBy(pointed).includes(index)"
-                        :misplaced="missPlacedIndices.includes(index)"
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="sudoku">
-        <span class="new-cell" v-for="cell in cells">{{ cell.value }}</span>
+            <number-cell class="cell" v-for="cell in cells" :key="cells.indexOf(cell)"
+            @mouseenter="pointed = cells.indexOf(cell)"
+            :cell="cell"
+            :affected="affectedIndicesBy(pointed).includes(cells.indexOf(cell))"
+            :misplaced="missPlacedIndices.includes(cells.indexOf(cell))"
+            />
         </div>
         <div class="history">
             <historical-event :event="command" :key="index" :active="history.commands.length - index === history.current"
