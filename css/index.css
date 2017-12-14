@@ -1,26 +1,47 @@
+:root {
+    --color-default: black;
+    --color-main: skyblue;
+    --color-error: orange;
+    --color-line-main: var(--color-default);
+    --color-line-sub: silver;
+}
+
 * {
     font-family: 'Droid Sans', sans-serif;
     font-family: 'Droid Serif', serif;
 }
 
-.boxes {
+.history {
     display: inline-block;
-    border: 0 solid black;
+    vertical-align: top;
+    overflow: auto;
+    height: 100%;
+    margin-left: 6pt;
+}
+
+.history::before {
+    display: inline-block;
+    content: 'HISTORY';
+    padding: 0 6pt;
+    font-size: 11pt;
+    line-height: 15pt;
+    border-bottom: 1px solid var(--color-line-main);
+}
+
+.history .event {
+    padding: 2pt 4pt;
+}
+
+.history .event.active {
+    background-color: var(--color-main);
+}
+
+.sudoku {
+    display: inline-block;
+    border-color: var(--color-line-main);
     border-width: 0 1px 1px 0;
-}
-
-.box {
-    display: inline-block;
-    border: 0 solid black;
-    border-width: 1px 0 0 1px;
-}
-
-.row-in-box:first-child > .cell {
-    border-top-style: none;
-}
-
-.cell:first-child {
-    border-left-style: none;
+    border-style: solid;
+    width: calc(9 * 37px);
 }
 
 .cell {
@@ -28,32 +49,56 @@
     text-align: center;
     vertical-align: middle;
     font-size: 16pt;
-    line-height: 27pt;
-    width: 27pt;
-    height: 27pt;
-    border-color: silver;
+    width: 36px;
+    height: 36px;
+    line-height: 36px;
+    border-color: var(--color-line-sub);
     border-width: 1px 0 0 1px;
     border-style: solid;
 }
 
-.cell.hover {
-    background-color: skyblue;
+.cell:nth-of-type(9n + 1), .cell:nth-of-type(9n + 4), .cell:nth-of-type(9n + 7) {
+    border-left-color: var(--color-line-main);
 }
 
-.cell .given {
+.cell:nth-of-type(-n + 63) {
+    border-top-color: var(--color-line-main);
+}
+
+.cell:nth-of-type(-n + 54) {
+    border-top-color: var(--color-line-sub);
+}
+
+.cell:nth-of-type(-n + 36) {
+    border-top-color: var(--color-line-main);
+}
+
+.cell:nth-of-type(-n + 27) {
+    border-top-color: var(--color-line-sub);
+}
+
+.cell:nth-of-type(-n + 9) {
+    border-top-color: var(--color-line-main);
+}
+
+.cell.hover {
+    background-color: var(--color-main);
+}
+
+.cell.error {
+    background-color: var(--color-error);
+}
+
+.cell.given {
     font-family: 'Droid Sans', sans-serif;
 }
 
-.memo {
-    line-height: 1em;
-}
-
-.memo > span {
+span.memo {
     display: inline-block;
     text-align: center;
     vertical-align: middle;
     font-size: 6.5pt;
-    line-height: 9pt;
-    width: 9pt;
-    height: 9pt;
+    line-height: 12px;
+    width: 12px;
+    height: 12px;
 }
