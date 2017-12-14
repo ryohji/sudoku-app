@@ -28,11 +28,11 @@ const rootVm = new Vue({
             template: `
             <span @mouseenter="$emit('mouseenter')" :class="{hover: affected, error: misplaced, given: cell.given, }" >{{
                 cell.value !== 0 ? cell.value : ''
-                }}<span v-if="cell.value === 0" class="memo" v-for="n in memoNumbers">{{ n }}</span>
+                }}<span v-if="cell.value === 0" v-for="n in memoNumbers">{{ n }}</span>
             </span>
             `,
             computed: {
-                memoNumbers: function() { return this.cell.memo.map((set, i) => set ? i + 1 : ''); }
+                memoNumbers: function() { return this.cell.memo.map((set, i) => set ? i + 1 : ''); },
             },
         },
         'historical-event': {
