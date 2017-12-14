@@ -20,7 +20,5 @@
     "url": "https://github.com/ryohji/sudoku-app/issues"
   },
   "homepage": "https://github.com/ryohji/sudoku-app#readme",
-  "dependencies": {
-    "vue": "^2.5.2"
-  }
+  "dependencies": {}
 }
