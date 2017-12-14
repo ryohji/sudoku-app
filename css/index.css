@@ -93,7 +93,7 @@
     font-family: 'Droid Sans', sans-serif;
 }
 
-span.memo {
+.cell > span {
     display: inline-block;
     text-align: center;
     vertical-align: middle;
